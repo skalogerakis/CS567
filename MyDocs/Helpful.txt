@@ -1,0 +1,20 @@
+# Table of description logics and formal ontology notations
+http://www.lesfleursdunormal.fr/static/_downloads/great_ontology_table.pdf
+
+# Managing Ontologies
+https://owlready2.readthedocs.io/en/v0.35/onto.html
+
+# Classes and Individuals (Instances)
+https://owlready2.readthedocs.io/en/v0.35/class.html
+
+# Properties
+https://owlready2.readthedocs.io/en/v0.35/properties.html
+
+# Datatypes
+https://owlready2.readthedocs.io/en/v0.35/datatype.html
+
+# Class constructs, restrictions and logical operators
+https://owlready2.readthedocs.io/en/v0.35/restriction.html
+
+# Disjointness, open and local closed world reasoning
+https://owlready2.readthedocs.io/en/v0.35/disjoint.html
