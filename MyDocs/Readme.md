@@ -382,3 +382,339 @@ The list of relations that exist for a given property can be obtained by the .ge
 **Warning**
 
 The quadstore is not indexed for the .get_relations() method. Thus, it can be slow on huge ontologies.
+
+## Datatypes
+Owlready automatically recognizes and translates basic datatypes to Python, such as string, int, float, etc.
+
+### Creating custom datatypes
+The declare_datatype() global function allows to declare a new datatype. It takes 4 arguments:
+
+- datatype: the Python datatype (for example, a Python type or class)
+- iri: the IRI used to represent the datatype in ontologies
+- parser: a function that takes a serialized string and returns the corresponding datatype
+- unparser: a function that takes a datatype and returns its serialization in a string
+
+The function returns the storid associated to the datatype.
+
+**Warning:** The datatype must be declared BEFORE loading any ontology that uses it.
+
+Here is an example for adding support for the XSD “hexBinary” datatype:
+
+        >>> class Hex(object):
+        ...   def __init__(self, value):
+        ...     self.value = value
+
+        >>> def parser(s):
+        ...   return Hex(int(s, 16))
+
+        >>> def unparser(x):
+        ...   h = hex(x.value)[2:]
+        ...   if len(h) % 2 != 0: return "0%s" % h
+        ...   return h
+
+        >>> declare_datatype(Hex, "http://www.w3.org/2001/XMLSchema#hexBinary", parser, unparser)
+        
+The new datatype can then be used as any others:
+
+        >>> onto = world.get_ontology("http://www.test.org/t.owl")
+
+        >>> with onto:
+        ...   class p(Thing >> Hex): pass
+
+        ...   class C(Thing): pass
+
+        ...   c1 = C()
+        ...   c1.p.append(Hex(14))
+        
+In addition, the define_datatype_in_ontology() function allows to define the datatype in a given ontology. This was not needed for hexBinary above, because it is already defined in XMLSchema. However, for user-defined datatype, it is recommended to define them in an ontology (Owlready does not strictly require that, but other tools like Protégé do).
+
+The following example (re)define the hexBinary datatype in our ontology:
+
+        >>> define_datatype_in_ontology(Hex, "http://www.w3.org/2001/XMLSchema#hexBinary", onto)
+        This add the (xsd:hexBinary, rdf:type, rdfs:datatype) RDF triple in the quadstore.
+
+As said above, declare_datatype() must be called * before * using the datatype. On the contrary, define_datatype_in_ontology() may be called after loading an ontology that use the datatype.
+
+## Class constructs, restrictions and logical operators
+Restrictions are special types of Classes in ontology.
+
+### Restrictions on a Property
+        >>> from owlready2 import *
+
+        >>> onto = get_ontology("http://test.org/onto.owl")
+
+        >>> with onto:
+        ...     class Drug(Thing):
+        ...         pass
+        ...     class ActivePrinciple(Thing):
+        ...         pass
+        ...     class has_for_active_principle(Drug >> ActivePrinciple):
+        ...         pass
+        
+For example, a non-Placebo Drug is a Drug with an Active Principle:
+
+        >>> class NonPlaceboDrug(Drug):
+        ...     equivalent_to = [Drug & has_for_active_principle.some(ActivePrinciple)]
+And a Placebo is a Drug with no Active Principle:
+
+        >>> class Placebo(Drug):
+        ...     equivalent_to = [Drug & Not(has_for_active_principle.some(ActivePrinciple))]
+
+In the example above, ‘has_for_active_principle.some(ActivePrinciple)’ is the Class of all objects that have at least one Active Principle. The Not() function returns the negation (or complement) of a Class. The & operator returns the intersection of two Classes.
+
+Another example, an Association Drug is a Drug that associates two or more Active Principle:
+
+        >>> with onto:
+        ...     class DrugAssociation(Drug):
+        ...         equivalent_to = [Drug & has_for_active_principle.min(2, ActivePrinciple)]
+        
+Owlready provides the following types of restrictions (they have the same names than in Protégé):
+
+- some : Property.some(Range_Class)
+- only : Property.only(Range_Class)
+- min : Property.min(cardinality, Range_Class)
+- max : Property.max(cardinality, Range_Class)
+- exactly : Property.exactly(cardinality, Range_Class)
+- value : Property.value(Range_Individual / Literal value)
+- has_self : Property.has_self(Boolean value)
+
+
+When defining classes, restrictions can be used in class definition (i.e. ‘equivalent_to =’), but also as superclasses, using ‘is_a =’, as in the following example:
+
+        >>> with onto:
+        ...     class MyClass(Thing):
+        ...         is_a = [my_property.some(Value)]
+        
+In addition, restrictions can be added to existing classes by adding them to .is_a or .equivalent_to, as in the two following examples:
+
+        >>> MyClass.is_a.append(my_property.some(Value))
+
+        >>> MyClass.equivalent_to.append(my_property.some(Value))
+        
+
+Restrictions can be modified in place (Owlready2 updates the quadstore automatically), using the following attributes: .property, .type (SOME, ONLY, MIN, MAX, EXACTLY or VALUE), .cardinality and .value (a Class, an Individual, a class contruct or another restriction).
+
+Finally, the Inverse(Property) construct can be used as the inverse of a given Property.
+
+### Restrictions as class properties
+Owlready allows to access restriction as class properties.
+
+By default, existential restrictions (i.e. SOME restrictions and VALUES restrictions) can be accessed as if they were class properties in Owlready. For example:
+
+        >>> NonPlaceboDrug.has_for_active_principle
+        [onto.ActivePrinciple]
+
+These class attributes can also be modified (e.g. NonPlaceboDrug.has_for_active_principle.append(…) ).
+
+The .class_property_type attribute of Properties allows to indicate how to handle class properties. It is a list made of the following values:
+
+- “some”: handle class properties as existential restrictions (i.e. SOME restrictions and VALUES restrictions).
+- “only”: handle class properties as universal restrictions (i.e. ONLY restrictions).
+- “relation”: handle class properties as relations (i.e. simple RDF triple, as in Linked Data).
+When more than one value is specified, all the specified method are used when defining the value of the property for a class.
+
+The .class_property_type attribute corresponds to the “http://www.lesfleursdunormal.fr/static/_downloads/owlready_ontology.owl#class_property_type” annotation.
+
+The set_default_class_property_type(types) global function allows to set the default type of class property used, when no type is specified for a given property. The default value is [“some”].
+
+### Restrictions as class properties in defined classes
+Defined classes are classes that are defined by an “equivalent to” relation, such as Placebo and NonPlaceboDrug above.
+
+The .defined_class Boolean attribute can be used to mark a class as “defined”. It corresponds to the “http://www.lesfleursdunormal.fr/static/_downloads/owlready_ontology.owl#defined_class” annotation.
+
+When a class is marked as “defined”, Owlready automatically generates an equivalent_to formula, taking into account the class parents and the class properties.
+
+The following program shows an example. It creates a drug ontology, with a Drug class and several HealthConditions. In addition, two properties are created, for indiciations and contraindications. Here, we choose to manage indications with SOME restrictions and contraindication with ONLY restrictions.
+
+Then, the program creates two subclasses of Drug: Antalgic and Aspirin. Thoses subclasses are marked as defined (with defined_class = True), and their properties are defined also.
+
+        >>> onto2 = get_ontology("http://test.org/onto2.owl")
+
+        >>> with onto2:
+        ...     class Drug(Thing): pass
+        ...     class ActivePrinciple(Thing): pass
+        ...     class has_for_active_principle(Drug >> ActivePrinciple): pass
+
+        ...     class HeathCondition(Thing): pass
+        ...     class Pain(HeathCondition): pass
+        ...     class ModeratePain(Pain): pass
+        ...     class CardiacDisorder(HeathCondition): pass
+        ...     class Hypertension(CardiacDisorder): pass
+
+        ...     class Pregnancy(HeathCondition): pass
+        ...     class Child(HeathCondition): pass
+        ...     class Bleeding(HeathCondition): pass
+
+        ...     class has_for_indications      (Drug >> HeathCondition): class_property_type = ["some"]
+        ...     class has_for_contraindications(Drug >> HeathCondition): class_property_type = ["only"]
+
+        ...     class Antalgic(Drug):
+        ...         defined_class = True
+        ...         has_for_indications = [Pain]
+        ...         has_for_contraindications = [Pregnancy, Child, Bleeding]
+
+        ...     class Aspirin(Antalgic):
+        ...         defined_class = True
+        ...         has_for_indications = [ModeratePain]
+        ...         has_for_contraindications = [Pregnancy, Bleeding]
+Owlready automatically produces the appropriate equivalent_to formula, as we can verify:
+
+        >>> print(Antalgic.equivalent_to)
+        [onto.Drug
+        & onto.has_for_indications.some(onto.Pain)
+        & onto.has_for_contraindications.only(onto.Child | onto.Pregnancy | onto.Bleeding)]
+
+        >>> print(Aspirin.equivalent_to)
+        [onto.Antalgic
+        & onto.has_for_indications.some(onto.ModeratePain)
+        & onto.has_for_contraindications.only(onto.Pregnancy | onto.Bleeding)]
+        
+Notice that this mapping between class properties and definition is bidirectional: one can also use it to access an existing definition as class properties. The following example illustrates that:
+
+        >>> with onto2:
+        ...     class Antihypertensive(Drug):
+        ...         equivalent_to = [Drug
+        ...                          & has_for_indications.some(Hypertension)
+        ...                          &has_for_contraindications.only(Pregnancy)]
+
+        >>> print(Antihypertensive.has_for_indications)
+        [onto.Hypertension]
+
+        >>> print(Antihypertensive.has_for_contraindications)
+        [onto.Pregnancy]
+        
+
+### Logical operators (intersection, union and complement)
+Owlready provides the following operators between Classes (normal Classes but also class constructs and restrictions):
+
+- ‘&’ : And operator (intersection). For example: Class1 & Class2. It can also be written: And([Class1, Class2])
+- ‘|’ : Or operator (union). For example: Class1 | Class2. It can also be written: Or([Class1, Class2])
+- Not() : Not operator (negation or complement). For example: Not(Class1)
+The Classes used with logical operators can be normal Classes (inheriting from Thing), restrictions or other logical operators.
+
+Intersections, unions and complements can be modified in place using the .Classes (intersections and unions) or .Class (complement) attributes.
+
+### One-Of constructs
+In ontologies, a ‘One Of’ statement is used for defining a Class by extension, i.e. by listing its Instances rather than by defining its properties.
+
+        >>> with onto:
+        ...     class DrugForm(Thing):
+        ...         pass
+
+        >>> tablet     = DrugForm()
+        >>> capsule    = DrugForm()
+        >>> injectable = DrugForm()
+        >>> pomade     = DrugForm()
+
+        # Assert that there is only four possible drug forms
+        >>> DrugForm.is_a.append(OneOf([tablet, capsule, injectable, pomade]))
+        
+The construct be modified in place using the .instances attribute.
+
+### Inverse-of constructs
+Inverse-of constructs produces the inverse of a property, without creating a new property.
+
+        Inverse(has_for_active_principle)
+The construct be modified in place using the .property attribute.
+
+### ConstrainedDatatype
+A constrained datatype is a data whose value is restricted, for example an integer between 0 and 20.
+
+The global function ConstrainedDatatype() create a constrained datatype from a base datatype, and one or more facets:
+
+- length
+- min_length
+- max_length
+- pattern
+- white_space
+- max_inclusive
+- max_exclusive
+- min_inclusive
+- min_exclusive
+- total_digits
+- fraction_digits
+
+For example:
+
+        ConstrainedDatatype(int, min_inclusive = 0, max_inclusive = 20)
+        ConstrainedDatatype(str, max_length = 100)
+
+### Property chain
+Property chain allows to chain two properties (this is sometimes noted prop1 o prop2). The PropertyChain() function allows to create a new property chain from a list of properties:
+
+PropertyChain([prop1, prop2])
+The construct be modified in place using the .properties attribute.
+
+## Disjointness, open and local closed world reasoning
+By default, OWL considers the world as ‘open’, i.e. everything that is not stated in the ontology is not ‘false’ but ‘possible’ (this is known as open world assumption). Therfore, things and facts that are ‘false’ or ‘impossible’ must be clearly stated as so in the ontology.
+
+### Disjoint Classes
+Two (or more) Classes are disjoint if there is no Individual belonging to all these Classes (remember that, contrary to Python instances, an Individual can have several Classes, see Classes and Individuals (Instances)).
+
+A Classes disjointness is created with the AllDisjoint() function, which takes a list of Classes as parameter. In the example below, we have two Classes, Drug and ActivePrinciple, and we assert that they are disjoint (yes, we need to specify that explicitely – sometimes ontologies seem a little dumb!).
+
+        >>> from owlready2 import *
+
+        >>> onto = get_ontology("http://test.org/onto.owl")
+
+        >>> with onto:
+        ...     class Drug(Thing):
+        ...         pass
+        ...     class ActivePrinciple(Thing):
+        ...         pass
+        ...     AllDisjoint([Drug, ActivePrinciple])
+        
+### Disjoint Properties
+OWL also introduces Disjoint Properties. Disjoint Properties can also be created using AllDisjoint().
+
+### Different Individuals
+Two Individuals are different if they are distinct. In OWL, two Individuals might be considered as being actually the same, single, Individual, unless they are stated different. Difference is to Individuals what disjointness is to Classes.
+
+The following example creates two active principles and asserts that they are different (yes, we also need to state explicitely that acetaminophen and aspirin are not the same!)
+
+        >>> acetaminophen = ActivePrinciple("acetaminophen")
+        >>> aspirin       = ActivePrinciple("aspirin")
+
+        >>> AllDifferent([acetaminophen, aspirin])
+        
+**Note**
+
+In Owlready2, AllDifferent is actually the same function as AllDisjoint – the exact meaning depends on the parameters (AllDisjoint if you provide Classes, AllDifferent if you provide Instances, and disjoint Properties if you provide Properties).
+
+### Querying and modifying disjoints
+The .disjoints() method returns a generator for iterating over AllDisjoint constructs involving the given Class or Property. For Individuals, .differents() behaves similarly.
+
+        >>> for d in Drug.disjoints():
+        ...     print(d.entities)
+        [onto.Drug, onto.ActivePrinciple]
+        
+The ‘entities’ attribute of an AllDisjoint is writable, so you can modify the AllDisjoint construct by adding or removing entities.
+
+OWL also provides the ‘disjointWith’ and ‘propertyDisjointWith’ relations for pairwise disjoints (involving only two elements). Owlready2 exposes all disjoints as AllDisjoints, including those declared with the ‘disjointWith’ or ‘propertyDisjointWith’ relations. In the quad store (or when saving OWL files), disjoints involving 2 entities are defined using the ‘disjointWith’ or ‘propertyDisjointWith’ relations, while others are defined using AllDisjoint or AllDifferent.
+
+### Closing Individuals
+The open world assumption also implies that the properties of a given Individual are not limited to the ones that are explicitely stated. For example, if you create a Drug Individual with a single Active Principle, it does not mean that it has only a single Active Principle.
+
+        >>> with onto:
+        ...     class has_for_active_principle(Drug >> ActivePrinciple): pass
+
+        >>> my_acetaminophen_drug = Drug(has_for_active_principle = [acetaminophen])
+        
+In the example above, ‘my_acetaminophen_drug’ has an acetaminophen Active Principle (this fact is true) and it may have other Active Principle(s) (this fact is possible).
+
+If you want ‘my_acetaminophen_drug’ to be a Drug with acetaminophen and no other Active Principle, you have to state it explicitely using a restriction (see Class constructs, restrictions and logical operators):
+
+        >>> my_acetaminophen_drug.is_a.append(has_for_active_principle.only(OneOf([acetaminophen])))
+
+Notice that we used OneOf() to ‘turn’ the acetaminophen Individual into a Class that we can use in the restriction.
+
+You’ll quickly find that the open world assumption often leads to tedious and long lists of AllDifference and Restrictions. Hopefully, Owlready2 provides the close_world() function for automatically ‘closing’ an Individual. close_world() will automatically add ONLY restrictions as needed; it accepts an optional parameter: a list of the Properties to ‘close’ (defaults to all Properties whose domain is compatible with the Individual).
+
+        >>> close_world(my_acetaminophen_drug)
+### Closing Classes
+close_world() also accepts a Class. In this case, it closes the Class, its subclasses, and all their Individuals.
+
+By default, when close_world() is not called, the ontology performs open world reasoning. By selecting the Classes and the Individuals you want to ‘close’, the close_world() function enables local closed world reasoning with OWL.
+
+### Closing an ontology
+Finally, close_world() also accepts an ontology. In this case, it closes all the Classes defined in the ontology. This corresponds to fully closed world reasoning.
