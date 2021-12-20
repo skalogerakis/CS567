@@ -18,3 +18,14 @@ https://owlready2.readthedocs.io/en/v0.35/restriction.html
 
 # Disjointness, open and local closed world reasoning
 https://owlready2.readthedocs.io/en/v0.35/disjoint.html
+
+
+Attributes for debugging purposes
+
+.is_a attribute for getting the list of superclasses
+.subclasses() method returns the list of direct subclasses of a class
+The .descendants() and .ancestors() Class methods return a set of the descendant and ancestor Classes (including self,
+but excluding non-entity classes such as restrictions).
+To obtain all equivalent classes, including indirect ones (due to transitivity), use .INDIRECT_equivalent_to.
+.instances() class method can be used to iterate through all Instances of a Class (including its subclasses). It
+returns a generator.

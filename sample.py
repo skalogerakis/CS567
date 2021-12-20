@@ -24,35 +24,35 @@ class teaches(Professor >> Course):
 #
 #
 #
-#
-#
-#
-# class ActiveProfessor(Professor):
-#     equivalent_to = [Professor & teaches.some(Course)]
-#
-#
-#
-#
-#
-# class InactiveProfessor(Professor):
-#     equivalent_to = [Professor & Not(teaches.some(Course))]
-#
-#
-#
-#
-#
-#
-#
-#
-#
-# class Student(Person):
-#     pass
-#
-#
-# class has_advisor(ObjectProperty):
-#     domain = [Student]
-#     range = [Professor]
-#
+
+
+
+class ActiveProfessor(Professor):
+    equivalent_to = [Professor & teaches.some(Course)]
+
+
+
+
+
+class InactiveProfessor(Professor):
+    equivalent_to = [Professor & Not(teaches.some(Course))]
+
+
+
+
+
+
+
+
+
+class Student(Person):
+    pass
+
+
+class has_advisor(ObjectProperty):
+    domain = [Student]
+    range = [Professor]
+
 
 
 if __name__ == '__main__':
@@ -65,12 +65,12 @@ if __name__ == '__main__':
     #
     bilas = Professor('bilas')
     print(bilas.iri)
+
+    giorgos = Student('giorgos')
     #
-    # giorgos = Student('giorgos')
-    # #
-    # print(has_advisor.domain)
-    #
-    # giorgos.has_advisor = [bilas]
-    # print(giorgos.has_advisor)
+    print(has_advisor.domain)
+
+    giorgos.has_advisor = [bilas]
+    print(giorgos.has_advisor)
 
     onto.save(file= "onto.owl", format = "rdfxml")

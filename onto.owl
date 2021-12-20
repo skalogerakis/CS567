@@ -25,9 +25,51 @@
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
+<owl:Class rdf:about="#ActiveProfessor">
+  <rdfs:subClassOf rdf:resource="#Professor"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#Professor"/>
+        <owl:Restriction>
+          <owl:onProperty rdf:resource="#teaches"/>
+          <owl:someValuesFrom rdf:resource="#Course"/>
+        </owl:Restriction>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+</owl:Class>
+
+<owl:Class rdf:about="#InactiveProfessor">
+  <rdfs:subClassOf rdf:resource="#Professor"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#Professor"/>
+        <owl:Class>
+          <owl:complementOf>
+            <owl:Restriction>
+              <owl:onProperty rdf:resource="#teaches"/>
+              <owl:someValuesFrom rdf:resource="#Course"/>
+            </owl:Restriction>
+          </owl:complementOf>
+        </owl:Class>
+      </owl:intersectionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+</owl:Class>
+
+<owl:Class rdf:about="#Student">
+  <rdfs:subClassOf rdf:resource="#Person"/>
+</owl:Class>
+
 <Professor rdf:about="#bilas">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
 </Professor>
+
+<Student rdf:about="#giorgos">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</Student>
 
 
 </rdf:RDF>
