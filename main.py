@@ -16,8 +16,6 @@ class ArtificialSatellite(Thing):
 
 
 
-
-
 class Galaxy(Thing):
     namespace = onto
 
