@@ -8,9 +8,18 @@
 
 <owl:Ontology rdf:about="http://skalerakis.org/onto.owl"/>
 
+<owl:ObjectProperty rdf:about="#hasCenterOfMass">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+</owl:ObjectProperty>
+
 <owl:ObjectProperty rdf:about="#observes">
   <rdfs:domain rdf:resource="#CelestialBody"/>
   <rdfs:range rdf:resource="#CelestialBody"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#orbitsAround">
+  <rdfs:domain rdf:resource="#CelestialBody"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:ObjectProperty>
 
 <owl:ObjectProperty rdf:about="#hasMember">
@@ -56,11 +65,17 @@
   <owl:disjointWith rdf:resource="#NaturalSatellite"/>
 </owl:Class>
 
-<owl:Class rdf:about="#CelestialBody">
+<owl:Class rdf:about="#Galaxy">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#hasCenterOfMass"/>
+      <owl:someValuesFrom rdf:resource="#Satellite"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
 </owl:Class>
 
-<owl:Class rdf:about="#Galaxy">
+<owl:Class rdf:about="#CelestialBody">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
