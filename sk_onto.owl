@@ -8,34 +8,52 @@
 
 <owl:Ontology rdf:about="http://skalerakis.org/onto.owl"/>
 
-<owl:ObjectProperty rdf:about="#observes">
-  <rdfs:domain rdf:resource="#CelestialBody"/>
-  <rdfs:range rdf:resource="#CelestialBody"/>
-</owl:ObjectProperty>
-
 <owl:ObjectProperty rdf:about="#locatedIn">
   <rdfs:domain rdf:resource="#CelestialBody"/>
   <rdfs:range rdf:resource="#Galaxy"/>
 </owl:ObjectProperty>
 
-<owl:Class rdf:about="#NaturalSatellite">
+<owl:ObjectProperty rdf:about="#observes">
+  <rdfs:domain rdf:resource="#CelestialBody"/>
+  <rdfs:range rdf:resource="#CelestialBody"/>
+</owl:ObjectProperty>
+
+<owl:Class rdf:about="#Satellite">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  <owl:equivalentClass>
+    <owl:Class>
+      <owl:unionOf rdf:parseType="Collection">
+        <rdf:Description rdf:about="#ArtificialSatellite"/>
+        <rdf:Description rdf:about="#NaturalSatellite"/>
+      </owl:unionOf>
+    </owl:Class>
+  </owl:equivalentClass>
+</owl:Class>
+
+<owl:Class rdf:about="#NaturalSatellite">
+  <rdfs:subClassOf rdf:resource="#Satellite"/>
+  <rdfs:subClassOf>
+    <owl:Class>
+      <owl:complementOf rdf:resource="#ArtificialSatellite"/>
+    </owl:Class>
+  </rdfs:subClassOf>
 </owl:Class>
 
 <owl:Class rdf:about="#ArtificialSatellite">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  <rdfs:subClassOf rdf:resource="#Satellite"/>
   <rdfs:subClassOf>
     <owl:Class>
       <owl:complementOf rdf:resource="#NaturalSatellite"/>
     </owl:Class>
   </rdfs:subClassOf>
-</owl:Class>
-
-<owl:Class rdf:about="#Galaxy">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  <owl:disjointWith rdf:resource="#NaturalSatellite"/>
 </owl:Class>
 
 <owl:Class rdf:about="#CelestialBody">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Galaxy">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
