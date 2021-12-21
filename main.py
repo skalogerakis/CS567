@@ -34,7 +34,7 @@ NaturalSatellite.is_a.append(Not(ArtificialSatellite))  # 3) Natural Satellite i
     So the result will be either Natural or Artificial Satellite
 '''
 AllDisjoint([ArtificialSatellite, NaturalSatellite])
-Satellite.equivalent_to.append(Or([ArtificialSatellite ,NaturalSatellite]))
+Satellite.equivalent_to.append(Or([ArtificialSatellite, NaturalSatellite]))
 
 
 #
@@ -75,25 +75,43 @@ class Galaxy(Thing):
     namespace = onto
 
 
-# 4) A CelestialBody is located in a Galaxy
-class locatedIn(ObjectProperty):
-    namespace = onto
-    domain = [CelestialBody]
-    range = [Galaxy]
+
 
 
 class observes(ObjectProperty):
     namespace = onto
-    domain = [CelestialBody]    #or Thing
+    domain = [CelestialBody]  # or Thing
     range = [CelestialBody]
+
 
 # 5) A space telescope is a celestial body that observes other celestial body
 class SpaceTelescope(CelestialBody):
     namespace = onto
     is_a = [CelestialBody & observes.some(CelestialBody)]
 
-class orbitsAround():
+
+# class orbitsAround():
+#     namespace = onto
+
+
+class Universe(Thing):
     namespace = onto
+
+
+class hasMember(ObjectProperty):
+    namespace = onto
+    domain = [Universe]
+    range = [Galaxy]
+
+# 4) A CelestialBody is located in a Galaxy
+class locatedIn(ObjectProperty):
+    namespace = onto
+    domain = [CelestialBody]
+    range = [Galaxy]
+    inverse_property = hasMember    # 5) locatedIn property is the inverse of hasMember. NOTE: Don't need to add in the other function, owlready2 applies it on its own. Will this create an issue??
+
+# 6) Universe has at least one member that is a Galaxy
+Universe.is_a.append(hasMember.min(1, Galaxy))
 
 # TODO all the Thing Concepts must be disjoint
 if __name__ == '__main__':

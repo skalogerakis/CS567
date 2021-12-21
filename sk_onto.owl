@@ -8,14 +8,21 @@
 
 <owl:Ontology rdf:about="http://skalerakis.org/onto.owl"/>
 
-<owl:ObjectProperty rdf:about="#locatedIn">
-  <rdfs:domain rdf:resource="#CelestialBody"/>
-  <rdfs:range rdf:resource="#Galaxy"/>
-</owl:ObjectProperty>
-
 <owl:ObjectProperty rdf:about="#observes">
   <rdfs:domain rdf:resource="#CelestialBody"/>
   <rdfs:range rdf:resource="#CelestialBody"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasMember">
+  <rdfs:domain rdf:resource="#Universe"/>
+  <rdfs:range rdf:resource="#Galaxy"/>
+  <owl:inverseOf rdf:resource="#locatedIn"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#locatedIn">
+  <rdfs:domain rdf:resource="#CelestialBody"/>
+  <rdfs:range rdf:resource="#Galaxy"/>
+  <owl:inverseOf rdf:resource="#hasMember"/>
 </owl:ObjectProperty>
 
 <owl:Class rdf:about="#Satellite">
@@ -69,6 +76,17 @@
         </owl:Restriction>
       </owl:intersectionOf>
     </owl:Class>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Universe">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#hasMember"/>
+      <owl:onClass rdf:resource="#Galaxy"/>
+      <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minQualifiedCardinality>
+    </owl:Restriction>
   </rdfs:subClassOf>
 </owl:Class>
 
