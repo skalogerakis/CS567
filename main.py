@@ -75,7 +75,7 @@ class hasCenterOfMass(ObjectProperty, FunctionalProperty):
 
 class Galaxy(Thing):
     namespace = onto
-    is_a = [ hasCenterOfMass.max(1) ]
+    is_a = [ hasCenterOfMass.some(Thing) ]
 #     is_a = [ hasCenterOfMass.some(Galaxy) ] instead maybe that??? TODO
 
 
