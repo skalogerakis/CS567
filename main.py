@@ -40,6 +40,9 @@ class hasCenterOfMass(ObjectProperty, FunctionalProperty):  # 16) hasCenterOfMas
 class orbitsAround(ObjectProperty):
     namespace = onto
 
+class hasOrbitingAround(ObjectProperty): # helpful to insert multiple instances that orbit around in abox
+    namespace = onto
+    inverse_property = orbitsAround  # ++) hasOrbitingAround is equivalent to the Inverse of orbitsAround
 
 class observes(ObjectProperty):
     namespace = onto
@@ -135,25 +138,28 @@ AllDisjoint([NormalMatter, DarkMatter])  # Normal and DarkMatter must be disjoin
 NormalMatter.is_a.append(Not(DarkMatter))  # 5) NormalMatter is not Dark Matter
 
 
+class PlanetarySystemBody(Thing):
+    namespace = onto
+    is_a = [CelestialBody & Not(Planet) & Not(DwarfPlanet) & Not(
+        NaturalSatellite)]  # 3) A planetary system Body is a celestial body
+    # that is not a planet nor a dwarf planet not a satellite
+
+
 class SpaceTelescope(Thing):
     namespace = onto
     is_a = [CelestialBody & observes.some(
         CelestialBody)]  # 10) A space telescope is a celestial body that observes some celestial body
 
 
-class Comet(CelestialBody):  # 11) Comet is a celestial body (is a subclass of)
+class Comet(PlanetarySystemBody):  # 11) Comet is a planetary system body (is a subclass of)
     namespace = onto
 
 
-class Asteroid(CelestialBody):  # 12) Asteroid is a celestial body (is a subclass of)
+class Asteroid(PlanetarySystemBody):  # 12) Asteroid is a planetary system body (is a subclass of)
     namespace = onto
 
-
-class PlanetarySystemBody(Thing):
-    namespace = onto
-    is_a = [CelestialBody & Not(Planet) & Not(DwarfPlanet) & Not(
-        NaturalSatellite)]  # 3) A planetary system Body is a celestial body
-    # that is not a planet nor a dwarf planet not a satellite
+# All together it corresponds to the rule: Comet OR Asteroid IS_A PlanetarySystemBody
+# (hence we use somewhere the concept PlanetarySystemBody) [to delete this]
 
 
 if __name__ == '__main__':
@@ -169,69 +175,85 @@ if __name__ == '__main__':
     ############################ ABOX #####################################
 
     # Galaxy Concepts
-    gal1 = Galaxy("Milkyway")
-    gal2 = Galaxy("Andromeda")
-    gal3 = Galaxy("Cygunus")
+    milkyway = Galaxy("Milkyway")
+    andromeda = Galaxy("Andromeda")
+    Galaxy("Cygunus")
 
     # Celestial Body Concepts
-    cel1 = CelestialBody("Moon")
-    cel2 = CelestialBody("Sun")
-    cel3 = CelestialBody("Mars")
-    cel4 = CelestialBody("Pluto")
+    CelestialBody("Moon")
+    CelestialBody("Sun")
+    CelestialBody("Mars")
+    CelestialBody("Pluto")
 
     # Planetary System Body
-    psb1 = PlanetarySystemBody("Enke")
-    psb2 = PlanetarySystemBody("Haleys")
-    psb3 = PlanetarySystemBody("Ceres")
-    psb4 = PlanetarySystemBody("Icarus")
+    PlanetarySystemBody("Enke") # Enke is a Comet
+    PlanetarySystemBody("Haleys")
+    # ceres = PlanetarySystemBody("Ceres") # Ceres is a DwarfPlanet (so not an Asteroid -> not a PlanetarySustemBody as we define it)
+    PlanetarySystemBody("Icarus") # Icarus is an Asteroid
 
     # Planet
-    pl1 = Planet("Earth")
-    pl2 = Planet("Mars")
-    pl3 = Planet("Jupiter")
-    pl4 = Planet("Venus")
-    pl5 = Planet("Saturn")
+    earth = Planet("Earth")
+    mars = Planet("Mars")
+    jupiter = Planet("Jupiter")
+    venus = Planet("Venus")
+    saturn = Planet("Saturn")
 
     # Star
-    st1 = Star("Sun")
-    st2 = Star("Sirius")
-    st3 = Star("Rigel")
-    st4 = Star("Pleiades")
+    sun = Star("Sun")
+    sirius = Star("Sirius")
+    rigel = Star("Rigel")
+    pleiades = Star("Pleiades")
 
     # Dwarf Planet
-    dp1 = DwarfPlanet("Ceres")
-    dp2 = DwarfPlanet("Pluto")
-    dp3 = DwarfPlanet("Makemake")
-    dp4 = DwarfPlanet("Eris")
+    ceres = DwarfPlanet("Ceres")
+    pluto = DwarfPlanet("Pluto")
+    makemake = DwarfPlanet("Makemake")
+    eris = DwarfPlanet("Eris")
 
     # Asteroid
-    ast1 = Asteroid("Eros")
-    ast2 = Asteroid("Ceres")
-    ast3 = Asteroid("Icarus")
-    ast4 = Asteroid("Pallas")
+    eros = Asteroid("Eros")
+    icarus = Asteroid("Icarus")
+    pallas = Asteroid("Pallas")
 
     # Natural Satellite
-    ns1 = NaturalSatellite("Moon")
-    ns2 = NaturalSatellite("Europa")
-    ns3 = NaturalSatellite("Triton")
+    moon = NaturalSatellite("Moon")
+    europa = NaturalSatellite("Europa")
+    triton = NaturalSatellite("Triton")
 
     # Artificial Satellite
-    as1 = ArtificialSatellite("Sputnik")
-    as2 = ArtificialSatellite("Glory")
+    sputnik = ArtificialSatellite("Sputnik")
+    aura = ArtificialSatellite("Aura")
+
+    stereo = Satellite("STEREO")
 
     # Space Telescope
-    sptel1 = SpaceTelescope("Hubble")
-    sptel1 = SpaceTelescope("MOST")
-    sptel1 = SpaceTelescope("EUVE")
+    hubble = SpaceTelescope("Hubble")
+    most = SpaceTelescope("MOST")
+    euve = SpaceTelescope("EUVE")
 
     # Comet
-    com1 = Comet("Chiron")
-    com2 = Comet("Borrelly")
-    com3 = Comet("Halley")
-    com4 = Comet("Enke")
+    chiron = Comet("Chiron")
+    borrelly = Comet("Borrelly")
+    halley = Comet("Halley")
+    enke = Comet("Enke")
 
     # Combination with roles
-    ns1.orbitsAround = [pl1]    # Moon orbitsAround Earth
+    # moon.isSatelliteOf = [earth]
+    # aura.isSatelliteOf = [earth]
+    earth.hasForSatellite = [moon, aura]
+    stereo.isSatelliteOf = [sun]
 
-    # TODO is it obligatory to add roles??? See how this is done
-    onto.save(file="skaloger_onto.owl", format="rdfxml")
+    sun.pullGravity = [earth, mars, jupiter, venus, saturn]
+    earth.pullGravity = [moon, hubble, sputnik]
+
+    milkyway.hasMember = [sun, sirius, rigel, earth, mars, jupiter, venus, saturn, pluto, 
+    moon, europa, triton, eros, pallas, icarus, ceres]
+
+    hubble.orbitsAround.append(earth)
+    # earth.orbitsAround.append(sun)
+    # mars.orbitsAround.append(sun)
+    sun.hasOrbitingAround = [earth, mars, jupiter, venus, saturn]
+    earth.hasOrbitingAround = [moon, sputnik, hubble]
+
+    
+    onto.save(file="mar_onto.owl", format="rdfxml")
