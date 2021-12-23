@@ -169,69 +169,102 @@ if __name__ == '__main__':
     ############################ ABOX #####################################
 
     # Galaxy Concepts
-    gal1 = Galaxy("Milkyway")
-    gal2 = Galaxy("Andromeda")
-    gal3 = Galaxy("Cygunus")
+    Milkyway = Galaxy("Milkyway")
+    Andromeda = Galaxy("Andromeda")
+    Cygunus = Galaxy("Cygunus")
 
     # Celestial Body Concepts
-    cel1 = CelestialBody("Moon")
-    cel2 = CelestialBody("Sun")
-    cel3 = CelestialBody("Mars")
-    cel4 = CelestialBody("Pluto")
+    Moon = CelestialBody("Moon")
+    Sun = CelestialBody("Sun")
+    Mars = CelestialBody("Mars")
+    Pluto = CelestialBody("Pluto")
 
     # Planetary System Body
-    psb1 = PlanetarySystemBody("Enke")
-    psb2 = PlanetarySystemBody("Haleys")
-    psb3 = PlanetarySystemBody("Ceres")
-    psb4 = PlanetarySystemBody("Icarus")
+    Enke = PlanetarySystemBody("Enke")
+    Halley = PlanetarySystemBody("Halley") # mini change from "haleys" to Halley
+    Ceres = PlanetarySystemBody("Ceres")
+    Icarus = PlanetarySystemBody("Icarus")
 
     # Planet
-    pl1 = Planet("Earth")
-    pl2 = Planet("Mars")
-    pl3 = Planet("Jupiter")
-    pl4 = Planet("Venus")
-    pl5 = Planet("Saturn")
+    Earth = Planet("Earth")
+    Mars = Planet("Mars")
+    Jupiter = Planet("Jupiter")
+    Venus = Planet("Venus")
+    Saturn = Planet("Saturn")
 
     # Star
-    st1 = Star("Sun")
-    st2 = Star("Sirius")
-    st3 = Star("Rigel")
-    st4 = Star("Pleiades")
+    Sun = Star("Sun")
+    Sirius = Star("Sirius")
+    Rigel = Star("Rigel")
+    Pleiades = Star("Pleiades")
 
     # Dwarf Planet
-    dp1 = DwarfPlanet("Ceres")
-    dp2 = DwarfPlanet("Pluto")
-    dp3 = DwarfPlanet("Makemake")
-    dp4 = DwarfPlanet("Eris")
+    Ceres = DwarfPlanet("Ceres")
+    Pluto = DwarfPlanet("Pluto")
+    Makemake = DwarfPlanet("Makemake")
+    Eris = DwarfPlanet("Eris")
 
     # Asteroid
-    ast1 = Asteroid("Eros")
-    ast2 = Asteroid("Ceres")
-    ast3 = Asteroid("Icarus")
-    ast4 = Asteroid("Pallas")
+    Eros = Asteroid("Eros")
+    Ceres = Asteroid("Ceres")
+    Icarus = Asteroid("Icarus")
+    Pallas = Asteroid("Pallas")
 
     # Natural Satellite
-    ns1 = NaturalSatellite("Moon")
-    ns2 = NaturalSatellite("Europa")
-    ns3 = NaturalSatellite("Triton")
+    Moon = NaturalSatellite("Moon")
+    Europa = NaturalSatellite("Europa")
+    Triton = NaturalSatellite("Triton")
 
     # Artificial Satellite
-    as1 = ArtificialSatellite("Sputnik")
-    as2 = ArtificialSatellite("Glory")
+    Sputnik = ArtificialSatellite("Sputnik")
+    Glory = ArtificialSatellite("Glory")
 
     # Space Telescope
-    sptel1 = SpaceTelescope("Hubble")
-    sptel1 = SpaceTelescope("MOST")
-    sptel1 = SpaceTelescope("EUVE")
+    Hubble = SpaceTelescope("Hubble")
+    MOST = SpaceTelescope("MOST")
+    EUVE = SpaceTelescope("EUVE")
 
     # Comet
-    com1 = Comet("Chiron")
-    com2 = Comet("Borrelly")
-    com3 = Comet("Halley")
-    com4 = Comet("Enke")
-
+    Chiron = Comet("Chiron")
+    Borrelly = Comet("Borrelly")
+    Halley = Comet("Halley")
+    Enke = Comet("Enke")
+    
+    # Normal Matter
+    MilkywayNM = NormalMatter("MilkywayNM")
+    
+    # Dark Matter
+    MilkywayDM = DarkMatter("MilkywayDM")
+    
     # Combination with roles
-    ns1.orbitsAround = [pl1]    # Moon orbitsAround Earth
+    # orbitsAround
+    Moon.orbitsAround = [Earth]    # Moon orbitsAround Earth
+    Hubble.orbitsAround = [Earth]
+    Sputnik.orbitsAround = [Earth]
+    Earth.orbitsAround = [Sun]
+    Mars.orbitsAround = [Sun] 
 
-    # TODO is it obligatory to add roles??? See how this is done
-    onto.save(file="onto.owl", format="rdfxml")
+    # hasMember - locatedIn
+    Milkyway.hasMember = [Sun, Sirius, Rigel, Earth, Mars , Pallas,Icarus,Ceres] 
+
+
+    # hasForSatellite - isSatelliteOf
+    Earth.hasForSatellite = [Moon,Glory,Sputnik]
+
+    # observes
+    Hubble.observes = [Earth]
+    MOST.observes = [Earth]
+    EUVE.observes = [Milkyway]
+
+    # pullGravity
+    Earth.pullGravity = [Moon,Sun,Hubble,Sputnik]
+    Sun.pullGravity = [Earth,Jupiter,Venus,Saturn,Icarus]
+    
+    MilkywayNM.pullGravity=[MilkywayDM]
+
+    # hasCenterOfMass
+    Cygunus.hasCenterOfMass = Thing
+    Andromeda.hasCenterOfMass = Thing
+    Milkyway.hasCenterOfMass = Thing
+
+    onto.save(file="main_final_onto.owl", format="rdfxml")
