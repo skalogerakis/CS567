@@ -42,7 +42,7 @@ class orbitsAround(ObjectProperty):
 
 class hasOrbitingAround(ObjectProperty): # helpful to insert multiple instances that orbit around in abox
     namespace = onto
-    inverse_property = orbitsAround  # ++) hasOrbitingAround is equivalent to the Inverse of orbitsAround
+    inverse_property = orbitsAround  # 21) hasOrbitingAround is equivalent to the Inverse of orbitsAround
 
 class observes(ObjectProperty):
     namespace = onto
@@ -177,18 +177,19 @@ if __name__ == '__main__':
     # Galaxy Concepts
     milkyway = Galaxy("Milkyway")
     andromeda = Galaxy("Andromeda")
-    Galaxy("Cygunus")
+    cygunus = Galaxy("Cygunus")
 
     # Celestial Body Concepts
     CelestialBody("Moon")
     CelestialBody("Sun")
+    CelestialBody("Earth")
     CelestialBody("Mars")
     CelestialBody("Pluto")
 
     # Planetary System Body
+    PlanetarySystemBody("Ceres") # Ceres is an Asteroid
     PlanetarySystemBody("Enke") # Enke is a Comet
-    PlanetarySystemBody("Haleys")
-    # ceres = PlanetarySystemBody("Ceres") # Ceres is a DwarfPlanet (so not an Asteroid -> not a PlanetarySustemBody as we define it)
+    PlanetarySystemBody("Halleys") # Halleys is a Comet
     PlanetarySystemBody("Icarus") # Icarus is an Asteroid
 
     # Planet
@@ -205,12 +206,12 @@ if __name__ == '__main__':
     pleiades = Star("Pleiades")
 
     # Dwarf Planet
-    ceres = DwarfPlanet("Ceres")
     pluto = DwarfPlanet("Pluto")
     makemake = DwarfPlanet("Makemake")
     eris = DwarfPlanet("Eris")
 
     # Asteroid
+    ceres = Asteroid("Ceres")
     eros = Asteroid("Eros")
     icarus = Asteroid("Icarus")
     pallas = Asteroid("Pallas")
@@ -219,12 +220,14 @@ if __name__ == '__main__':
     moon = NaturalSatellite("Moon")
     europa = NaturalSatellite("Europa")
     triton = NaturalSatellite("Triton")
+    rhea = NaturalSatellite("Rhea")
+    dione = NaturalSatellite("Dione")
 
     # Artificial Satellite
     sputnik = ArtificialSatellite("Sputnik")
+    glory = ArtificialSatellite("Glory")
     aura = ArtificialSatellite("Aura")
-
-    stereo = Satellite("STEREO")
+    stereo = ArtificialSatellite("STEREO")
 
     # Space Telescope
     hubble = SpaceTelescope("Hubble")
@@ -237,23 +240,37 @@ if __name__ == '__main__':
     halley = Comet("Halley")
     enke = Comet("Enke")
 
-    # Combination with roles
-    # moon.isSatelliteOf = [earth]
-    # aura.isSatelliteOf = [earth]
-    earth.hasForSatellite = [moon, aura]
-    stereo.isSatelliteOf = [sun]
+    # Matter
+    normal_matter = NormalMatter("MilkywayNM")
+    dark_matter = DarkMatter("MilkywayDM")
 
-    sun.pullGravity = [earth, mars, jupiter, venus, saturn]
-    earth.pullGravity = [moon, hubble, sputnik]
+    # Relations between concepts and roles
 
     milkyway.hasMember = [sun, sirius, rigel, earth, mars, jupiter, venus, saturn, pluto, 
     moon, europa, triton, eros, pallas, icarus, ceres]
 
-    hubble.orbitsAround.append(earth)
-    # earth.orbitsAround.append(sun)
-    # mars.orbitsAround.append(sun)
-    sun.hasOrbitingAround = [earth, mars, jupiter, venus, saturn]
-    earth.hasOrbitingAround = [moon, sputnik, hubble]
+    milkyway.hasCenterOfMass = Thing
+    andromeda.hasCenterOfMass = Thing
+    cygunus.hasCenterOfMass = Thing
 
-    
+    earth.pullGravity = [moon, sun, hubble, sputnik]
+    sun.pullGravity = [earth, mars, jupiter, venus, saturn, icarus]
+
+    normal_matter.pullGravity.append(dark_matter)
+
+    saturn.hasForSatellite = [rhea, dione]
+    earth.hasForSatellite = [moon, aura, sputnik]
+
+    hubble.orbitsAround.append(earth)
+    moon.orbitsAround.append(earth)
+    sputnik.orbitsAround.append(earth)
+
+    # earth.hasOrbitingAround = [moon, sputnik, hubble]
+    sun.hasOrbitingAround = [earth, mars, jupiter, venus, saturn, pluto]
+
+    hubble.observes.append(earth)
+    most.observes.append(earth)
+    euve.observes.append(milkyway)
+
+
     onto.save(file="mar_onto.owl", format="rdfxml")
