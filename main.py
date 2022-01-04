@@ -40,9 +40,6 @@ class hasCenterOfMass(ObjectProperty, FunctionalProperty):  # 16) hasCenterOfMas
 class orbitsAround(ObjectProperty):
     namespace = onto
 
-class hasOrbitingAround(ObjectProperty): # helpful to insert multiple instances that orbit around in abox
-    namespace = onto
-    inverse_property = orbitsAround  # 21) hasOrbitingAround is equivalent to the Inverse of orbitsAround
 
 class observes(ObjectProperty):
     namespace = onto
@@ -84,9 +81,9 @@ class CelestialBody(Thing):
     is_a = [locatedIn.some(Galaxy)]  # 7) A celestial body is located in a galaxy
 
 
-class Planet(Thing):
+class Planet(CelestialBody):
     namespace = onto
-    is_a = [CelestialBody & orbitsAround.some(Star)]  # 6) A planet is a celestial body that orbits around a Star
+    is_a = [orbitsAround.some(Star)]  # 6) A planet is a celestial body that orbits around a Star
 
 
 class DwarfPlanet(Planet):
@@ -95,10 +92,10 @@ class DwarfPlanet(Planet):
         Planet))]  # 9) Dwarf planet is a planet that is not a satellite of a planet TODO Swithced the original defintion
 
 
-class Satellite(Thing):
+class Satellite(CelestialBody):
     namespace = onto
     is_a = [
-        CelestialBody & orbitsAround.some(Thing)]  # 17) A satellite is a celestial body that orbits around something.
+        orbitsAround.some(Thing)]  # 17) A satellite is a celestial body that orbits around something.
     # That is the way that Top concept is defined here, otherwise we get an error
 
 
@@ -111,7 +108,7 @@ class ArtificialSatellite(Satellite):
     is_a = [Not(NaturalSatellite)]  # 4) Artificial Satellite is not a natural satellite.
 
 
-NaturalSatellite.is_a.append(Not(ArtificialSatellite))  # 19) Natural Satellite in not an artificial satellite
+# NaturalSatellite.is_a.append(Not(ArtificialSatellite))  # 19) Natural Satellite in not an artificial satellite
 
 '''
     This is the key for rule 18)
@@ -135,38 +132,60 @@ class DarkMatter(Thing):
 
 
 AllDisjoint([NormalMatter, DarkMatter])  # Normal and DarkMatter must be disjoint
-NormalMatter.is_a.append(Not(DarkMatter))  # 5) NormalMatter is not Dark Matter
+# NormalMatter.is_a.append(Not(DarkMatter))  # 5) NormalMatter is not Dark Matter
 
 
-class PlanetarySystemBody(Thing):
+class SpaceTelescope(CelestialBody):
     namespace = onto
-    is_a = [CelestialBody & Not(Planet) & Not(DwarfPlanet) & Not(
-        NaturalSatellite)]  # 3) A planetary system Body is a celestial body
-    # that is not a planet nor a dwarf planet not a satellite
+    is_a = [observes.some(CelestialBody)] # 10) A space telescope is a celestial body that observes some celestial body
 
 
-class SpaceTelescope(Thing):
-    namespace = onto
-    is_a = [CelestialBody & observes.some(
-        CelestialBody)]  # 10) A space telescope is a celestial body that observes some celestial body
-
-
-class Comet(PlanetarySystemBody):  # 11) Comet is a planetary system body (is a subclass of)
+class Comet(CelestialBody):  # 11) Comet is a celestial body (is a subclass of)
     namespace = onto
 
 
-class Asteroid(PlanetarySystemBody):  # 12) Asteroid is a planetary system body (is a subclass of)
+class Asteroid(CelestialBody):  # 12) Asteroid is a celestial body (is a subclass of)
     namespace = onto
 
-# All together it corresponds to the rule: Comet OR Asteroid IS_A PlanetarySystemBody
-# (hence we use somewhere the concept PlanetarySystemBody) [to delete this]
 
+class PlanetarySystemBody(CelestialBody):
+    namespace = onto
+    is_a = [Not(Planet) & Not(DwarfPlanet) & Not(NaturalSatellite)] # 3) A planetary system Body is a celestial body
+                                                            # that is not a planet nor a dwarf planet not a satellite
+
+def is_consistent(ontology): # ?? den leei kai polla sto documentation
+    if list(ontology.inconsistent_classes()) != []:
+        return False
+    return True
+
+def is_of_types(individual):
+    types = onto.get_parents_of(individual) # or individual.is_a
+    return types
+
+def get_all_concept_instances(concept):
+    return onto.get_instances_of(concept) # or concept.instances()
+
+def get_all_role_instances(role): # ?? what is it suppose to print, ta roles mas einai ola object properties
+    return onto.get_instances_of(role) # or role.instances()
+
+def is_subclass_of(C,D):
+
+    subclasses = onto.get_children_of(D)
+
+    if C in subclasses:
+        return True
+    
+    return False
+
+def get_S_module():
+
+    return
 
 if __name__ == '__main__':
     # print(locatedIn.domain)
 
     # print('Satellite subclasses ', [x for x in Satellite.subclasses()])
-    #
+
     # print("Is a ART ", ArtificialSatellite.is_a)
     # print("Is a NAT ", NaturalSatellite.is_a)
     # print("Desc ", NaturalSatellite.descendants())
@@ -175,102 +194,115 @@ if __name__ == '__main__':
     ############################ ABOX #####################################
 
     # Galaxy Concepts
-    milkyway = Galaxy("Milkyway")
-    andromeda = Galaxy("Andromeda")
-    cygunus = Galaxy("Cygunus")
+    Milkyway = Galaxy("Milkyway")
+    Andromeda = Galaxy("Andromeda")
+    Cygunus = Galaxy("Cygunus")
 
     # Celestial Body Concepts
-    CelestialBody("Moon")
-    CelestialBody("Sun")
-    CelestialBody("Earth")
-    CelestialBody("Mars")
-    CelestialBody("Pluto")
+    Sun = CelestialBody("Sun")
 
     # Planetary System Body
-    PlanetarySystemBody("Ceres") # Ceres is an Asteroid
-    PlanetarySystemBody("Enke") # Enke is a Comet
-    PlanetarySystemBody("Halleys") # Halleys is a Comet
-    PlanetarySystemBody("Icarus") # Icarus is an Asteroid
+    Enke = PlanetarySystemBody("Enke")
+    Halley = PlanetarySystemBody("Halley") # mini change from "haleys" to Halley
+    Icarus = PlanetarySystemBody("Icarus")
 
     # Planet
-    earth = Planet("Earth")
-    mars = Planet("Mars")
-    jupiter = Planet("Jupiter")
-    venus = Planet("Venus")
-    saturn = Planet("Saturn")
+    Earth = Planet("Earth")
+    Mars = Planet("Mars")
+    Jupiter = Planet("Jupiter")
+    Venus = Planet("Venus")
+    Saturn = Planet("Saturn")
 
     # Star
-    sun = Star("Sun")
-    sirius = Star("Sirius")
-    rigel = Star("Rigel")
-    pleiades = Star("Pleiades")
+    Sun = Star("Sun")
+    Sirius = Star("Sirius")
+    Rigel = Star("Rigel")
+    Pleiades = Star("Pleiades")
 
     # Dwarf Planet
-    pluto = DwarfPlanet("Pluto")
-    makemake = DwarfPlanet("Makemake")
-    eris = DwarfPlanet("Eris")
+    Ceres = DwarfPlanet("Ceres")
+    Pluto = DwarfPlanet("Pluto")
+    Makemake = DwarfPlanet("Makemake")
+    Eris = DwarfPlanet("Eris")
 
     # Asteroid
-    ceres = Asteroid("Ceres")
-    eros = Asteroid("Eros")
-    icarus = Asteroid("Icarus")
-    pallas = Asteroid("Pallas")
+    Eros = Asteroid("Eros")
+    Ceres = Asteroid("Ceres")
+    Icarus = Asteroid("Icarus")
+    Pallas = Asteroid("Pallas")
 
     # Natural Satellite
-    moon = NaturalSatellite("Moon")
-    europa = NaturalSatellite("Europa")
-    triton = NaturalSatellite("Triton")
-    rhea = NaturalSatellite("Rhea")
-    dione = NaturalSatellite("Dione")
+    Moon = NaturalSatellite("Moon")
+    Europa = NaturalSatellite("Europa")
+    Triton = NaturalSatellite("Triton")
 
     # Artificial Satellite
-    sputnik = ArtificialSatellite("Sputnik")
-    glory = ArtificialSatellite("Glory")
-    aura = ArtificialSatellite("Aura")
-    stereo = ArtificialSatellite("STEREO")
+    Sputnik = ArtificialSatellite("Sputnik")
+    Glory = ArtificialSatellite("Glory")
 
     # Space Telescope
-    hubble = SpaceTelescope("Hubble")
-    most = SpaceTelescope("MOST")
-    euve = SpaceTelescope("EUVE")
+    Hubble = SpaceTelescope("Hubble")
+    MOST = SpaceTelescope("MOST")
+    EUVE = SpaceTelescope("EUVE")
 
     # Comet
-    chiron = Comet("Chiron")
-    borrelly = Comet("Borrelly")
-    halley = Comet("Halley")
-    enke = Comet("Enke")
+    Chiron = Comet("Chiron")
+    Borrelly = Comet("Borrelly")
+    Halley = Comet("Halley")
+    Enke = Comet("Enke")
+    
+    # Normal Matter
+    MilkywayNM = NormalMatter("MilkywayNM")
+    
+    # Dark Matter
+    MilkywayDM = DarkMatter("MilkywayDM")
+    
+    # Give individuals some properties
 
-    # Matter
-    normal_matter = NormalMatter("MilkywayNM")
-    dark_matter = DarkMatter("MilkywayDM")
+    Moon.orbitsAround = [Earth]
+    Hubble.orbitsAround = [Earth]
+    Sputnik.orbitsAround = [Earth]
+    Earth.orbitsAround = [Sun]
+    Mars.orbitsAround = [Sun] 
 
-    # Relations between concepts and roles
+    # hasMember - locatedIn
+    Milkyway.hasMember = [Sun,Sirius,Rigel,Earth,Mars,Pallas,Icarus,Ceres] 
 
-    milkyway.hasMember = [sun, sirius, rigel, earth, mars, jupiter, venus, saturn, pluto, 
-    moon, europa, triton, eros, pallas, icarus, ceres]
+    # hasForSatellite - isSatelliteOf
+    Earth.hasForSatellite = [Moon,Glory,Sputnik]
 
-    milkyway.hasCenterOfMass = Thing
-    andromeda.hasCenterOfMass = Thing
-    cygunus.hasCenterOfMass = Thing
+    # observes
+    Hubble.observes = [Earth]
+    MOST.observes = [Earth]
+    EUVE.observes = [Milkyway]
 
-    earth.pullGravity = [moon, sun, hubble, sputnik]
-    sun.pullGravity = [earth, mars, jupiter, venus, saturn, icarus]
+    # pullGravity
+    Earth.pullGravity = [Moon,Sun,Hubble,Sputnik]
+    Sun.pullGravity = [Earth,Jupiter,Venus,Saturn,Icarus]
+    
+    MilkywayNM.pullGravity=[MilkywayDM]
 
-    normal_matter.pullGravity.append(dark_matter)
+    onto.save(file="main_final_onto.owl", format="rdfxml")
 
-    saturn.hasForSatellite = [rhea, dione]
-    earth.hasForSatellite = [moon, aura, sputnik]
+    sync_reasoner()
 
-    hubble.orbitsAround.append(earth)
-    moon.orbitsAround.append(earth)
-    sputnik.orbitsAround.append(earth)
+    if not is_consistent(onto):
+        print("Ontology inconsistent")
+    else:
+        print("Ontology consistent")
 
-    # earth.hasOrbitingAround = [moon, sputnik, hubble]
-    sun.hasOrbitingAround = [earth, mars, jupiter, venus, saturn, pluto]
+    print(is_of_types(Halley))
+    print(is_of_types(Milkyway))
+    print(is_of_types(Moon))
+    print(is_of_types(Earth))
 
-    hubble.observes.append(earth)
-    most.observes.append(earth)
-    euve.observes.append(milkyway)
+    print(get_all_concept_instances(SpaceTelescope))
+    print(get_all_concept_instances(Planet))
+    print(get_all_concept_instances(DwarfPlanet))
 
+    print(get_all_role_instances(observes))
+    print(get_all_role_instances(pullGravity))
 
-    onto.save(file="mar_onto.owl", format="rdfxml")
+    print(is_subclass_of(Planet, Galaxy))
+    print(is_subclass_of(NaturalSatellite, Satellite))
+    print(is_subclass_of(Planet, CelestialBody))

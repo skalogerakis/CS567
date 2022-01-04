@@ -24,13 +24,7 @@
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
 </owl:ObjectProperty>
 
-<owl:ObjectProperty rdf:about="#orbitsAround">
-  <owl:inverseOf rdf:resource="#hasOrbitingAround"/>
-</owl:ObjectProperty>
-
-<owl:ObjectProperty rdf:about="#hasOrbitingAround">
-  <owl:inverseOf rdf:resource="#orbitsAround"/>
-</owl:ObjectProperty>
+<owl:ObjectProperty rdf:about="#orbitsAround"/>
 
 <owl:ObjectProperty rdf:about="#observes"/>
 
@@ -91,17 +85,12 @@
 </owl:Class>
 
 <owl:Class rdf:about="#Planet">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  <rdfs:subClassOf rdf:resource="#CelestialBody"/>
   <rdfs:subClassOf>
-    <owl:Class>
-      <owl:intersectionOf rdf:parseType="Collection">
-        <rdf:Description rdf:about="#CelestialBody"/>
-        <owl:Restriction>
-          <owl:onProperty rdf:resource="#orbitsAround"/>
-          <owl:someValuesFrom rdf:resource="#Star"/>
-        </owl:Restriction>
-      </owl:intersectionOf>
-    </owl:Class>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#orbitsAround"/>
+      <owl:someValuesFrom rdf:resource="#Star"/>
+    </owl:Restriction>
   </rdfs:subClassOf>
 </owl:Class>
 
@@ -125,17 +114,12 @@
 </owl:Class>
 
 <owl:Class rdf:about="#Satellite">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  <rdfs:subClassOf rdf:resource="#CelestialBody"/>
   <rdfs:subClassOf>
-    <owl:Class>
-      <owl:intersectionOf rdf:parseType="Collection">
-        <rdf:Description rdf:about="#CelestialBody"/>
-        <owl:Restriction>
-          <owl:onProperty rdf:resource="#orbitsAround"/>
-          <owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
-        </owl:Restriction>
-      </owl:intersectionOf>
-    </owl:Class>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#orbitsAround"/>
+      <owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    </owl:Restriction>
   </rdfs:subClassOf>
   <owl:equivalentClass>
     <owl:Class>
@@ -149,11 +133,6 @@
 
 <owl:Class rdf:about="#NaturalSatellite">
   <rdfs:subClassOf rdf:resource="#Satellite"/>
-  <rdfs:subClassOf>
-    <owl:Class>
-      <owl:complementOf rdf:resource="#ArtificialSatellite"/>
-    </owl:Class>
-  </rdfs:subClassOf>
 </owl:Class>
 
 <owl:Class rdf:about="#ArtificialSatellite">
@@ -168,11 +147,6 @@
 
 <owl:Class rdf:about="#NormalMatter">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
-  <rdfs:subClassOf>
-    <owl:Class>
-      <owl:complementOf rdf:resource="#DarkMatter"/>
-    </owl:Class>
-  </rdfs:subClassOf>
   <owl:disjointWith rdf:resource="#DarkMatter"/>
 </owl:Class>
 
@@ -185,12 +159,29 @@
   </rdfs:subClassOf>
 </owl:Class>
 
+<owl:Class rdf:about="#SpaceTelescope">
+  <rdfs:subClassOf rdf:resource="#CelestialBody"/>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#observes"/>
+      <owl:someValuesFrom rdf:resource="#CelestialBody"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="#Comet">
+  <rdfs:subClassOf rdf:resource="#CelestialBody"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Asteroid">
+  <rdfs:subClassOf rdf:resource="#CelestialBody"/>
+</owl:Class>
+
 <owl:Class rdf:about="#PlanetarySystemBody">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  <rdfs:subClassOf rdf:resource="#CelestialBody"/>
   <rdfs:subClassOf>
     <owl:Class>
       <owl:intersectionOf rdf:parseType="Collection">
-        <rdf:Description rdf:about="#CelestialBody"/>
         <owl:Class>
           <owl:complementOf rdf:resource="#Planet"/>
         </owl:Class>
@@ -205,122 +196,66 @@
   </rdfs:subClassOf>
 </owl:Class>
 
-<owl:Class rdf:about="#SpaceTelescope">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
-  <rdfs:subClassOf>
-    <owl:Class>
-      <owl:intersectionOf rdf:parseType="Collection">
-        <rdf:Description rdf:about="#CelestialBody"/>
-        <owl:Restriction>
-          <owl:onProperty rdf:resource="#observes"/>
-          <owl:someValuesFrom rdf:resource="#CelestialBody"/>
-        </owl:Restriction>
-      </owl:intersectionOf>
-    </owl:Class>
-  </rdfs:subClassOf>
-</owl:Class>
-
-<owl:Class rdf:about="#Comet">
-  <rdfs:subClassOf rdf:resource="#PlanetarySystemBody"/>
-</owl:Class>
-
-<owl:Class rdf:about="#Asteroid">
-  <rdfs:subClassOf rdf:resource="#PlanetarySystemBody"/>
-</owl:Class>
-
 <Galaxy rdf:about="#Milkyway">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-  <hasMember rdf:resource="#Pluto"/>
-  <hasMember rdf:resource="#Triton"/>
-  <hasMember rdf:resource="#Ceres"/>
-  <hasMember rdf:resource="#Eros"/>
+  <hasMember rdf:resource="#Mars"/>
   <hasMember rdf:resource="#Pallas"/>
-  <hasMember rdf:resource="#Europa"/>
   <hasMember rdf:resource="#Icarus"/>
-  <hasMember rdf:resource="#Jupiter"/>
-  <hasMember rdf:resource="#Venus"/>
-  <hasMember rdf:resource="#Saturn"/>
+  <hasMember rdf:resource="#Sirius"/>
+  <hasMember rdf:resource="#Ceres"/>
   <hasMember rdf:resource="#Rigel"/>
   <hasMember rdf:resource="#Earth"/>
-  <hasMember rdf:resource="#Sirius"/>
-  <hasMember rdf:resource="#Moon"/>
   <hasMember rdf:resource="#Sun"/>
-  <hasMember rdf:resource="#Mars"/>
-  <hasCenterOfMass rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </Galaxy>
 
 <Galaxy rdf:about="#Andromeda">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-  <hasCenterOfMass rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </Galaxy>
 
 <Galaxy rdf:about="#Cygunus">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-  <hasCenterOfMass rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </Galaxy>
-
-<CelestialBody rdf:about="#Moon">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-  <rdf:type rdf:resource="#NaturalSatellite"/>
-  <orbitsAround rdf:resource="#Earth"/>
-</CelestialBody>
 
 <CelestialBody rdf:about="#Sun">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
   <rdf:type rdf:resource="#Star"/>
-  <pullGravity rdf:resource="#Venus"/>
-  <pullGravity rdf:resource="#Saturn"/>
-  <pullGravity rdf:resource="#Icarus"/>
   <pullGravity rdf:resource="#Jupiter"/>
-  <pullGravity rdf:resource="#Mars"/>
-  <hasOrbitingAround rdf:resource="#Saturn"/>
-  <hasOrbitingAround rdf:resource="#Pluto"/>
-  <hasOrbitingAround rdf:resource="#Jupiter"/>
-  <hasOrbitingAround rdf:resource="#Earth"/>
-  <hasOrbitingAround rdf:resource="#Venus"/>
-  <hasOrbitingAround rdf:resource="#Mars"/>
+  <pullGravity rdf:resource="#Venus"/>
+  <pullGravity rdf:resource="#Icarus"/>
+  <pullGravity rdf:resource="#Saturn"/>
 </CelestialBody>
-
-<CelestialBody rdf:about="#Earth">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-  <rdf:type rdf:resource="#Planet"/>
-  <pullGravity rdf:resource="#Hubble"/>
-  <pullGravity rdf:resource="#Moon"/>
-  <pullGravity rdf:resource="#Sputnik"/>
-  <pullGravity rdf:resource="#Sun"/>
-  <hasForSatellite rdf:resource="#Moon"/>
-  <hasForSatellite rdf:resource="#Sputnik"/>
-  <hasForSatellite rdf:resource="#Aura"/>
-</CelestialBody>
-
-<CelestialBody rdf:about="#Mars">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-  <rdf:type rdf:resource="#Planet"/>
-</CelestialBody>
-
-<CelestialBody rdf:about="#Pluto">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-  <rdf:type rdf:resource="#DwarfPlanet"/>
-</CelestialBody>
-
-<PlanetarySystemBody rdf:about="#Ceres">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-  <rdf:type rdf:resource="#Asteroid"/>
-</PlanetarySystemBody>
 
 <PlanetarySystemBody rdf:about="#Enke">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
   <rdf:type rdf:resource="#Comet"/>
 </PlanetarySystemBody>
 
-<PlanetarySystemBody rdf:about="#Halleys">
+<PlanetarySystemBody rdf:about="#Halley">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <rdf:type rdf:resource="#Comet"/>
 </PlanetarySystemBody>
 
 <PlanetarySystemBody rdf:about="#Icarus">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
   <rdf:type rdf:resource="#Asteroid"/>
 </PlanetarySystemBody>
+
+<Planet rdf:about="#Earth">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <pullGravity rdf:resource="#Moon"/>
+  <pullGravity rdf:resource="#Hubble"/>
+  <pullGravity rdf:resource="#Sputnik"/>
+  <pullGravity rdf:resource="#Sun"/>
+  <orbitsAround rdf:resource="#Sun"/>
+  <hasForSatellite rdf:resource="#Glory"/>
+  <hasForSatellite rdf:resource="#Moon"/>
+  <hasForSatellite rdf:resource="#Sputnik"/>
+</Planet>
+
+<Planet rdf:about="#Mars">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <orbitsAround rdf:resource="#Sun"/>
+</Planet>
 
 <Planet rdf:about="#Jupiter">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
@@ -332,8 +267,6 @@
 
 <Planet rdf:about="#Saturn">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-  <hasForSatellite rdf:resource="#Rhea"/>
-  <hasForSatellite rdf:resource="#Dione"/>
 </Planet>
 
 <Star rdf:about="#Sirius">
@@ -347,6 +280,15 @@
 <Star rdf:about="#Pleiades">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
 </Star>
+
+<DwarfPlanet rdf:about="#Ceres">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <rdf:type rdf:resource="#Asteroid"/>
+</DwarfPlanet>
+
+<DwarfPlanet rdf:about="#Pluto">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</DwarfPlanet>
 
 <DwarfPlanet rdf:about="#Makemake">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
@@ -364,19 +306,16 @@
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
 </Asteroid>
 
+<NaturalSatellite rdf:about="#Moon">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <orbitsAround rdf:resource="#Earth"/>
+</NaturalSatellite>
+
 <NaturalSatellite rdf:about="#Europa">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
 </NaturalSatellite>
 
 <NaturalSatellite rdf:about="#Triton">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-</NaturalSatellite>
-
-<NaturalSatellite rdf:about="#Rhea">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-</NaturalSatellite>
-
-<NaturalSatellite rdf:about="#Dione">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
 </NaturalSatellite>
 
@@ -386,14 +325,6 @@
 </ArtificialSatellite>
 
 <ArtificialSatellite rdf:about="#Glory">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-</ArtificialSatellite>
-
-<ArtificialSatellite rdf:about="#Aura">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-</ArtificialSatellite>
-
-<ArtificialSatellite rdf:about="#STEREO">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
 </ArtificialSatellite>
 
@@ -418,10 +349,6 @@
 </Comet>
 
 <Comet rdf:about="#Borrelly">
-  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-</Comet>
-
-<Comet rdf:about="#Halley">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
 </Comet>
 
