@@ -102,36 +102,25 @@ class Satellite(CelestialBody):
 class NaturalSatellite(Satellite):
     namespace = onto
 
-
 class ArtificialSatellite(Satellite):
     namespace = onto
-    is_a = [Not(NaturalSatellite)]  # 4) Artificial Satellite is not a natural satellite.
+    # is_a = [Not(NaturalSatellite)]
 
-
-# NaturalSatellite.is_a.append(Not(ArtificialSatellite))  # 19) Natural Satellite in not an artificial satellite
-
-'''
-    This is the key for rule 18)
-    In ontologies an individual can belong to several classes. Therefore, a
-    given satellite can very well be both Natural and Artificial.(Open World Assumption)
-    For that reason, declare classes as disjoint. These cannot have individuals in common!!
-    So the result will be either Natural or Artificial Satellite
-'''
+# (4, 19) Artificial Satellite is not a Natural Satellite (and the opposite)
 AllDisjoint([ArtificialSatellite, NaturalSatellite])
-Satellite.equivalent_to.append(Or([ArtificialSatellite,
-                                   NaturalSatellite]))  # 18) Satellite is equivalent to Artificial Satellite or Natural Satellite
+
+# 18) Satellite is equivalent to Artificial Satellite or Natural Satellite
+Satellite.equivalent_to.append(Or([ArtificialSatellite, NaturalSatellite]))
 
 
 class NormalMatter(Thing):
     namespace = onto
 
-
 class DarkMatter(Thing):
     namespace = onto
-    is_a = [Not(NormalMatter)]  # 20) DarkMatter is not Normal Matter
+    # is_a = [Not(NormalMatter)]  # 20) DarkMatter is not Normal Matter
 
-
-AllDisjoint([NormalMatter, DarkMatter])  # Normal and DarkMatter must be disjoint
+AllDisjoint([NormalMatter, DarkMatter])  # (5, 20) NormalMatter and DarkMatter must be disjoint
 # NormalMatter.is_a.append(Not(DarkMatter))  # 5) NormalMatter is not Dark Matter
 
 
@@ -150,10 +139,10 @@ class Asteroid(CelestialBody):  # 12) Asteroid is a celestial body (is a subclas
 
 class PlanetarySystemBody(CelestialBody):
     namespace = onto
-    is_a = [Not(Planet) & Not(DwarfPlanet) & Not(NaturalSatellite)] # 3) A planetary system Body is a celestial body
+    is_a = [Not(Planet) & Not(NaturalSatellite)] # 3) A planetary system Body is a celestial body
                                                             # that is not a planet nor a dwarf planet not a satellite
 
-def is_consistent(ontology): # ?? den leei kai polla sto documentation
+def is_consistent(ontology): # ?? to ontology mporei na einai inconsistent kai logo abox, pws to elenxoume afto
     if list(ontology.inconsistent_classes()) != []:
         return False
     return True
@@ -177,8 +166,12 @@ def is_subclass_of(C,D):
     
     return False
 
+''' 
+Managing Ontologies > Access content of ontology > Simple queries
+SPARQL queries ??
+'''
 def get_S_module():
-
+    # ?? Aporia ti zitaei akribws
     return
 
 if __name__ == '__main__':
@@ -203,7 +196,7 @@ if __name__ == '__main__':
 
     # Planetary System Body
     Enke = PlanetarySystemBody("Enke")
-    Halley = PlanetarySystemBody("Halley") # mini change from "haleys" to Halley
+    Halley = PlanetarySystemBody("Halley")
     Icarus = PlanetarySystemBody("Icarus")
 
     # Planet
@@ -235,10 +228,12 @@ if __name__ == '__main__':
     Moon = NaturalSatellite("Moon")
     Europa = NaturalSatellite("Europa")
     Triton = NaturalSatellite("Triton")
+    # Sputnik = NaturalSatellite("Sputnik") # OntologyError: so our onto works fine
 
     # Artificial Satellite
     Sputnik = ArtificialSatellite("Sputnik")
     Glory = ArtificialSatellite("Glory")
+    # Triton = ArtificialSatellite("Triton") # OntologyError: so our onto works fine
 
     # Space Telescope
     Hubble = SpaceTelescope("Hubble")
@@ -284,7 +279,7 @@ if __name__ == '__main__':
 
     onto.save(file="main_final_onto.owl", format="rdfxml")
 
-    sync_reasoner()
+    sync_reasoner() # return None
 
     if not is_consistent(onto):
         print("Ontology inconsistent")
