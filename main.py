@@ -81,7 +81,7 @@ class CelestialBody(Thing):
     is_a = [locatedIn.some(Galaxy)]  # 7) A celestial body is located in a galaxy
 
 
-class Planet(Thing):
+class Planet(CelestialBody):
     namespace = onto
     is_a = [CelestialBody & orbitsAround.some(Star)]  # 6) A planet is a celestial body that orbits around a Star
 
@@ -92,53 +92,41 @@ class DwarfPlanet(Planet):
         Planet))]  # 9) Dwarf planet is a planet that is not a satellite of a planet TODO Swithced the original defintion
 
 
-class Satellite(Thing):
+class Satellite(CelestialBody):
     namespace = onto
-    is_a = [
-        CelestialBody & orbitsAround.some(Thing)]  # 17) A satellite is a celestial body that orbits around something.
+    is_a = [CelestialBody &
+        orbitsAround.some(Thing)]  # 17) A satellite is a celestial body that orbits around something.
     # That is the way that Top concept is defined here, otherwise we get an error
 
 
 class NaturalSatellite(Satellite):
     namespace = onto
 
-
 class ArtificialSatellite(Satellite):
     namespace = onto
-    is_a = [Not(NaturalSatellite)]  # 4) Artificial Satellite is not a natural satellite.
+    is_a = [Not(NaturalSatellite)] # 4) Artificial Satellite is not a Natural Satellite
 
-
-NaturalSatellite.is_a.append(Not(ArtificialSatellite))  # 19) Natural Satellite in not an artificial satellite
-
-'''
-    This is the key for rule 18)
-    In ontologies an individual can belong to several classes. Therefore, a
-    given satellite can very well be both Natural and Artificial.(Open World Assumption)
-    For that reason, declare classes as disjoint. These cannot have individuals in common!!
-    So the result will be either Natural or Artificial Satellite
-'''
+# (4, 19) Artificial Satellite and Natural Satellite must be disjoint
 AllDisjoint([ArtificialSatellite, NaturalSatellite])
-Satellite.equivalent_to.append(Or([ArtificialSatellite,
-                                   NaturalSatellite]))  # 18) Satellite is equivalent to Artificial Satellite or Natural Satellite
+
+# 18) Satellite is equivalent to Artificial Satellite or Natural Satellite
+Satellite.equivalent_to.append(Or([ArtificialSatellite, NaturalSatellite]))
 
 
 class NormalMatter(Thing):
     namespace = onto
 
-
 class DarkMatter(Thing):
     namespace = onto
     is_a = [Not(NormalMatter)]  # 20) DarkMatter is not Normal Matter
 
+AllDisjoint([NormalMatter, DarkMatter])  # (5, 20) NormalMatter and DarkMatter must be disjoint
+# NormalMatter.is_a.append(Not(DarkMatter))  # 5) NormalMatter is not Dark Matter
 
-AllDisjoint([NormalMatter, DarkMatter])  # Normal and DarkMatter must be disjoint
-NormalMatter.is_a.append(Not(DarkMatter))  # 5) NormalMatter is not Dark Matter
 
-
-class SpaceTelescope(Thing):
+class SpaceTelescope(CelestialBody):
     namespace = onto
-    is_a = [CelestialBody & observes.some(
-        CelestialBody)]  # 10) A space telescope is a celestial body that observes some celestial body
+    is_a = [observes.some(CelestialBody)] # 10) A space telescope is a celestial body that observes some celestial body
 
 
 class Comet(CelestialBody):  # 11) Comet is a celestial body (is a subclass of)
@@ -149,18 +137,48 @@ class Asteroid(CelestialBody):  # 12) Asteroid is a celestial body (is a subclas
     namespace = onto
 
 
-class PlanetarySystemBody(Thing):
+class PlanetarySystemBody(CelestialBody):
     namespace = onto
-    is_a = [CelestialBody & Not(Planet) & Not(DwarfPlanet) & Not(
-        NaturalSatellite)]  # 3) A planetary system Body is a celestial body
-    # that is not a planet nor a dwarf planet not a satellite
+    is_a = [Not(Planet) & Not(NaturalSatellite)] # 3) A planetary system Body is a celestial body
+                                                            # that is not a planet nor a dwarf planet not a satellite
 
+def is_consistent(ontology): # ?? to ontology mporei na einai inconsistent kai logo abox, pws to elenxoume afto
+    if list(ontology.inconsistent_classes()) != []:
+        return False
+    return True
+
+def is_of_types(individual):
+    types = onto.get_parents_of(individual) # or individual.is_a
+    return types
+
+def get_all_concept_instances(concept):
+    return onto.get_instances_of(concept) # or concept.instances()
+
+def get_all_role_instances(role): # ?? what is it suppose to print, ta roles mas einai ola object properties
+    return onto.get_instances_of(role) # or role.instances()
+
+def is_subclass_of(C,D):
+
+    subclasses = onto.get_children_of(D)
+
+    if C in subclasses:
+        return True
+    
+    return False
+
+''' 
+Managing Ontologies > Access content of ontology > Simple queries
+SPARQL queries ??
+'''
+def get_S_module():
+    # ?? Aporia ti zitaei akribws
+    return
 
 if __name__ == '__main__':
     # print(locatedIn.domain)
 
     # print('Satellite subclasses ', [x for x in Satellite.subclasses()])
-    #
+
     # print("Is a ART ", ArtificialSatellite.is_a)
     # print("Is a NAT ", NaturalSatellite.is_a)
     # print("Desc ", NaturalSatellite.descendants())
@@ -174,16 +192,13 @@ if __name__ == '__main__':
     Cygunus = Galaxy("Cygunus")
 
     # Celestial Body Concepts
-    Moon = CelestialBody("Moon")
     Sun = CelestialBody("Sun")
-    Mars = CelestialBody("Mars")
-    Pluto = CelestialBody("Pluto")
 
     # Planetary System Body
     Enke = PlanetarySystemBody("Enke")
-    Halley = PlanetarySystemBody("Halley") # mini change from "haleys" to Halley
-    Ceres = PlanetarySystemBody("Ceres")
+    Halley = PlanetarySystemBody("Halley")
     Icarus = PlanetarySystemBody("Icarus")
+    # Ceres = PlanetarySystemBody("Ceres")
 
     # Planet
     Earth = Planet("Earth")
@@ -214,10 +229,12 @@ if __name__ == '__main__':
     Moon = NaturalSatellite("Moon")
     Europa = NaturalSatellite("Europa")
     Triton = NaturalSatellite("Triton")
+    # Sputnik = NaturalSatellite("Sputnik") # OntologyError: so our onto works fine
 
     # Artificial Satellite
     Sputnik = ArtificialSatellite("Sputnik")
     Glory = ArtificialSatellite("Glory")
+    # Triton = ArtificialSatellite("Triton") # OntologyError: so our onto works fine
 
     # Space Telescope
     Hubble = SpaceTelescope("Hubble")
@@ -236,17 +253,16 @@ if __name__ == '__main__':
     # Dark Matter
     MilkywayDM = DarkMatter("MilkywayDM")
     
-    # Combination with roles
-    # orbitsAround
-    Moon.orbitsAround = [Earth]    # Moon orbitsAround Earth
+    # Give individuals some properties
+
+    Moon.orbitsAround = [Earth]
     Hubble.orbitsAround = [Earth]
     Sputnik.orbitsAround = [Earth]
     Earth.orbitsAround = [Sun]
     Mars.orbitsAround = [Sun] 
 
     # hasMember - locatedIn
-    Milkyway.hasMember = [Sun, Sirius, Rigel, Earth, Mars , Pallas,Icarus,Ceres] 
-
+    Milkyway.hasMember = [Sun,Sirius,Rigel,Earth,Mars,Pallas,Icarus,Ceres] 
 
     # hasForSatellite - isSatelliteOf
     Earth.hasForSatellite = [Moon,Glory,Sputnik]
@@ -262,9 +278,29 @@ if __name__ == '__main__':
     
     MilkywayNM.pullGravity=[MilkywayDM]
 
-    # hasCenterOfMass
-    Cygunus.hasCenterOfMass = Thing
-    Andromeda.hasCenterOfMass = Thing
-    Milkyway.hasCenterOfMass = Thing
-
     onto.save(file="main_final_onto.owl", format="rdfxml")
+
+    sync_reasoner() # return None
+
+    if not is_consistent(onto):
+        print("Ontology inconsistent")
+    else:
+        print("Ontology consistent")
+
+    print(is_of_types(Halley))
+    print(is_of_types(Milkyway))
+    print(is_of_types(Moon))
+    print(is_of_types(Earth))
+
+    print(get_all_concept_instances(SpaceTelescope))
+    print(get_all_concept_instances(Planet))
+    print(get_all_concept_instances(DwarfPlanet))
+
+    print(get_all_role_instances(observes))
+    print(get_all_role_instances(pullGravity))
+
+    print(is_subclass_of(Planet, Galaxy))
+    print(is_subclass_of(NaturalSatellite, Satellite))
+    print(is_subclass_of(Planet, CelestialBody))
+
+    # print()
