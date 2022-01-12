@@ -217,8 +217,8 @@
   <hasMember rdf:resource="#Ceres"/>
   <hasMember rdf:resource="#Sirius"/>
   <hasMember rdf:resource="#Earth"/>
-  <hasMember rdf:resource="#Sun"/>
   <hasMember rdf:resource="#Mars"/>
+  <hasMember rdf:resource="#Sun"/>
 </Galaxy>
 
 <Galaxy rdf:about="#Andromeda">
@@ -233,9 +233,9 @@
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
   <rdf:type rdf:resource="#Star"/>
   <pullGravity rdf:resource="#Icarus"/>
-  <pullGravity rdf:resource="#Saturn"/>
   <pullGravity rdf:resource="#Venus"/>
   <pullGravity rdf:resource="#Jupiter"/>
+  <pullGravity rdf:resource="#Saturn"/>
 </CelestialBody>
 
 <PlanetarySystemBody rdf:about="#Enke">
@@ -255,10 +255,10 @@
 
 <Planet rdf:about="#Earth">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-  <pullGravity rdf:resource="#Sun"/>
   <pullGravity rdf:resource="#Hubble"/>
   <pullGravity rdf:resource="#Moon"/>
   <pullGravity rdf:resource="#Sputnik"/>
+  <pullGravity rdf:resource="#Sun"/>
   <orbitsAround rdf:resource="#Sun"/>
   <hasForSatellite rdf:resource="#Moon"/>
   <hasForSatellite rdf:resource="#Glory"/>

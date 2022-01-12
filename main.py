@@ -172,7 +172,7 @@ def is_consistent(ontology, flag):
 
 
 def is_of_types(individual):
-    types = onto.get_parents_of(individual)  # or individual.is_a
+    types = onto.get_parents_of(individual)
     return types
 
 
@@ -301,10 +301,11 @@ if __name__ == '__main__':
     #  PHASE 2 implementation
 
     print("###### Stage 2 #########")
-
+    
     exception_flag = False  # Flag for OwlReadyInconsistentOntologyError
 
     try:
+        # Todo infer_property_values = True??
         sync_reasoner()
     except OwlReadyInconsistentOntologyError:
         exception_flag = True
@@ -316,22 +317,30 @@ if __name__ == '__main__':
     print(is_of_types(Halley))
     print(is_of_types(Milkyway))
     print(is_of_types(Moon))
-    print(is_of_types(Earth))
+    print(is_of_types(Sun))
+    print(is_of_types(Earth))   # TODO should it return also that Earth is a celestial body?
 
-    print("\n\n###### Stage 2.3 #########")
+    print("\n\n###### Stage 2.3 #########") # TODO you can call an external reasoner, or implement a method of your own
     print(get_all_concept_instances(SpaceTelescope))
     print(get_all_concept_instances(Planet))
     print(get_all_concept_instances(DwarfPlanet))
 
     # TODO must definitely check that
     print("\n\n###### Stage 2.4 #########")
-    print(get_all_role_instances(observes))
     print(get_all_role_instances(pullGravity))
 
+    # EUVE.observes = [Milkyway]
+    # print(get_all_role_instances(pullGravity))
+    # print(onto.observes.getProperties())
+    # tst = observes
+
+    # TODO using tableau from a reasoner, e.g., HermiT ???
     print("\n\n###### Stage 2.5 #########")
     print(is_subclass_of(Planet, Galaxy))
     print(is_subclass_of(NaturalSatellite, Satellite))
-    print(is_subclass_of(Planet, CelestialBody))
+    print(is_subclass_of(Planet, CelestialBody))    #TODO this is wrong should be True
+    print(is_subclass_of(DwarfPlanet, Planet))
+
 
     print("\n\n###### BONUS: Stage 2.6 #########")
     # Reconfigure bonus question at will
