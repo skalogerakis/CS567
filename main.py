@@ -68,12 +68,14 @@ class Star(Thing):
 
 class Galaxy(Thing):
     namespace = onto
-    is_a = [locatedIn.some(Universe) & hasMember.some(Star) & hasCenterOfMass.some(Thing)]  # 2) A galaxy is located in the universe and there is some star
-                                                                                            # that is a member of this galaxy and galaxy and hasCenterOfMass
-                                                                                            # TODO if defined without some, then creates a new class in Protege
+    is_a = [locatedIn.some(Universe) & hasMember.some(Star) & hasCenterOfMass.some(
+        Thing)]  # 2) A galaxy is located in the universe and there is some star
+    # that is a member of this galaxy and galaxy and hasCenterOfMass
+    # TODO if defined without some, then creates a new class in Protege
 
 
-Universe.is_a.append(hasMember.min(1, Galaxy))  # 8) Every Universe has at least one galaxy. Must define it here since we have not Galaxy when defining Universe class
+Universe.is_a.append(hasMember.min(1,
+                                   Galaxy))  # 8) Every Universe has at least one galaxy. Must define it here since we have not Galaxy when defining Universe class
 
 
 class CelestialBody(Thing):
@@ -107,6 +109,7 @@ class ArtificialSatellite(Satellite):
     namespace = onto
     is_a = [Not(NaturalSatellite)]  # 4) Artificial Satellite is not a natural satellite.
 
+
 # Comment out rule 19. TODO change that in the report as well
 # NaturalSatellite.is_a.append(Not(ArtificialSatellite))  # 19) Natural Satellite in not an artificial satellite
 
@@ -132,6 +135,8 @@ class DarkMatter(Thing):
 
 
 AllDisjoint([NormalMatter, DarkMatter])  # Normal and DarkMatter must be disjoint
+
+
 # Comment out rule 5. TODO change that in the report as well
 # NormalMatter.is_a.append(Not(DarkMatter))  # 5) NormalMatter is not Dark Matter
 
@@ -157,16 +162,37 @@ class PlanetarySystemBody(Thing):
     is_a = [CelestialBody & Not(Planet) & Not(NaturalSatellite)]
 
 
+###############     PHASE 2 METHODS        ######################
+def is_consistent(ontology, flag):
+    print(list(ontology.inconsistent_classes()))  # TODO remove, for debugging purposes
+    if list(ontology.inconsistent_classes()) != [] or flag:
+        return "No"
+    return "Yes"
+
+
+def is_of_types(individual):
+    types = onto.get_parents_of(individual)  # or individual.is_a
+    return types
+
+
+def get_all_concept_instances(concept):
+    return onto.get_instances_of(concept)  # or concept.instances()
+
+
+def get_all_role_instances(role):  # ?? what is it suppose to print, ta roles mas einai ola object properties
+    return onto.get_instances_of(role)  # or role.instances()
+
+
+def is_subclass_of(C, D):
+    subclasses = onto.get_children_of(D)
+
+    if C in subclasses:
+        return True
+
+    return False
+
 
 if __name__ == '__main__':
-    # print(locatedIn.domain)
-
-    # print('Satellite subclasses ', [x for x in Satellite.subclasses()])
-    #
-    # print("Is a ART ", ArtificialSatellite.is_a)
-    # print("Is a NAT ", NaturalSatellite.is_a)
-    # print("Desc ", NaturalSatellite.descendants())
-    # print("Ans ", ArtificialSatellite.ancestors())
 
     ############################ ABOX #####################################
 
@@ -183,8 +209,8 @@ if __name__ == '__main__':
 
     # Planetary System Body
     Enke = PlanetarySystemBody("Enke")
-    Halley = PlanetarySystemBody("Halley") # mini change from "haleys" to Halley
-    Ceres = PlanetarySystemBody("Ceres")
+    Halley = PlanetarySystemBody("Halley")
+    # Ceres = PlanetarySystemBody("Ceres")  # UPDATED. Comment that out, so that out ontology is consistent
     Icarus = PlanetarySystemBody("Icarus")
 
     # Planet
@@ -231,27 +257,26 @@ if __name__ == '__main__':
     Borrelly = Comet("Borrelly")
     Halley = Comet("Halley")
     Enke = Comet("Enke")
-    
+
     # Normal Matter
     MilkywayNM = NormalMatter("MilkywayNM")
-    
+
     # Dark Matter
     MilkywayDM = DarkMatter("MilkywayDM")
-    
+
     # Combination with roles
     # orbitsAround
-    Moon.orbitsAround = [Earth]    # Moon orbitsAround Earth
+    Moon.orbitsAround = [Earth]  # Moon orbitsAround Earth
     Hubble.orbitsAround = [Earth]
     Sputnik.orbitsAround = [Earth]
     Earth.orbitsAround = [Sun]
-    Mars.orbitsAround = [Sun] 
+    Mars.orbitsAround = [Sun]
 
     # hasMember - locatedIn
-    Milkyway.hasMember = [Sun, Sirius, Rigel, Earth, Mars , Pallas,Icarus,Ceres] 
-
+    Milkyway.hasMember = [Sun, Sirius, Rigel, Earth, Mars, Pallas, Icarus, Ceres]
 
     # hasForSatellite - isSatelliteOf
-    Earth.hasForSatellite = [Moon,Glory,Sputnik]
+    Earth.hasForSatellite = [Moon, Glory, Sputnik]
 
     # observes
     Hubble.observes = [Earth]
@@ -259,14 +284,44 @@ if __name__ == '__main__':
     EUVE.observes = [Milkyway]
 
     # pullGravity
-    Earth.pullGravity = [Moon,Sun,Hubble,Sputnik]
-    Sun.pullGravity = [Earth,Jupiter,Venus,Saturn,Icarus]
-    
-    MilkywayNM.pullGravity=[MilkywayDM]
+    Earth.pullGravity = [Moon, Sun, Hubble, Sputnik]
+    Sun.pullGravity = [Earth, Jupiter, Venus, Saturn, Icarus]
 
-    # hasCenterOfMass
-    Cygunus.hasCenterOfMass = Thing
-    Andromeda.hasCenterOfMass = Thing
-    Milkyway.hasCenterOfMass = Thing
+    MilkywayNM.pullGravity = [MilkywayDM]
 
     onto.save(file="main_final_onto.owl", format="rdfxml")
+
+    #  PHASE 2 implementation
+
+    print("###### Stage 2 #########")
+
+    exception_flag = False  # Flag for OwlReadyInconsistentOntologyError
+
+    try:
+        sync_reasoner()
+    except OwlReadyInconsistentOntologyError:
+        exception_flag = True
+    finally:
+        print("\n\n###### Stage 2.1 #########")
+        print("Is_consistent?\t ", is_consistent(ontology=onto, flag=exception_flag))
+
+    print("\n\n###### Stage 2.2 #########")
+    print(is_of_types(Halley))
+    print(is_of_types(Milkyway))
+    print(is_of_types(Moon))
+    print(is_of_types(Earth))
+
+    print("\n\n###### Stage 2.3 #########")
+    print(get_all_concept_instances(SpaceTelescope))
+    print(get_all_concept_instances(Planet))
+    print(get_all_concept_instances(DwarfPlanet))
+
+    # TODO must definitely check that
+    print("\n\n###### Stage 2.4 #########")
+    print(get_all_role_instances(observes))
+    print(get_all_role_instances(pullGravity))
+
+    print("\n\n###### Stage 2.5 #########")
+    print(is_subclass_of(Planet, Galaxy))
+    print(is_subclass_of(NaturalSatellite, Satellite))
+    print(is_subclass_of(Planet, CelestialBody))
