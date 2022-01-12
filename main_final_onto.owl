@@ -224,14 +224,25 @@
 
 <Galaxy rdf:about="#Milkyway">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <hasMember rdf:resource="#Mars"/>
+  <hasMember rdf:resource="#Icarus"/>
+  <hasMember rdf:resource="#Earth"/>
+  <hasMember rdf:resource="#Sirius"/>
+  <hasMember rdf:resource="#Rigel"/>
+  <hasMember rdf:resource="#Ceres"/>
+  <hasMember rdf:resource="#Pallas"/>
+  <hasMember rdf:resource="#Sun"/>
+  <hasCenterOfMass rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </Galaxy>
 
 <Galaxy rdf:about="#Andromeda">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <hasCenterOfMass rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </Galaxy>
 
 <Galaxy rdf:about="#Cygunus">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <hasCenterOfMass rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </Galaxy>
 
 <CelestialBody rdf:about="#Moon">
@@ -243,11 +254,16 @@
 <CelestialBody rdf:about="#Sun">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
   <rdf:type rdf:resource="#Star"/>
+  <pullGravity rdf:resource="#Saturn"/>
+  <pullGravity rdf:resource="#Jupiter"/>
+  <pullGravity rdf:resource="#Icarus"/>
+  <pullGravity rdf:resource="#Venus"/>
 </CelestialBody>
 
 <CelestialBody rdf:about="#Mars">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
   <rdf:type rdf:resource="#Planet"/>
+  <orbitsAround rdf:resource="#Sun"/>
 </CelestialBody>
 
 <CelestialBody rdf:about="#Pluto">
@@ -260,8 +276,9 @@
   <rdf:type rdf:resource="#Comet"/>
 </PlanetarySystemBody>
 
-<PlanetarySystemBody rdf:about="#Haleys">
+<PlanetarySystemBody rdf:about="#Halley">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <rdf:type rdf:resource="#Comet"/>
 </PlanetarySystemBody>
 
 <PlanetarySystemBody rdf:about="#Ceres">
@@ -277,6 +294,14 @@
 
 <Planet rdf:about="#Earth">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <pullGravity rdf:resource="#Sputnik"/>
+  <pullGravity rdf:resource="#Sun"/>
+  <pullGravity rdf:resource="#Hubble"/>
+  <pullGravity rdf:resource="#Moon"/>
+  <orbitsAround rdf:resource="#Sun"/>
+  <hasForSatellite rdf:resource="#Sputnik"/>
+  <hasForSatellite rdf:resource="#Moon"/>
+  <hasForSatellite rdf:resource="#Glory"/>
 </Planet>
 
 <Planet rdf:about="#Jupiter">
@@ -329,6 +354,7 @@
 
 <ArtificialSatellite rdf:about="#Sputnik">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <orbitsAround rdf:resource="#Earth"/>
 </ArtificialSatellite>
 
 <ArtificialSatellite rdf:about="#Glory">
@@ -337,14 +363,18 @@
 
 <SpaceTelescope rdf:about="#Hubble">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <orbitsAround rdf:resource="#Earth"/>
+  <observes rdf:resource="#Earth"/>
 </SpaceTelescope>
 
 <SpaceTelescope rdf:about="#MOST">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <observes rdf:resource="#Earth"/>
 </SpaceTelescope>
 
 <SpaceTelescope rdf:about="#EUVE">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <observes rdf:resource="#Milkyway"/>
 </SpaceTelescope>
 
 <Comet rdf:about="#Chiron">
@@ -355,9 +385,14 @@
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
 </Comet>
 
-<Comet rdf:about="#Halley">
+<NormalMatter rdf:about="#MilkywayNM">
   <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
-</Comet>
+  <pullGravity rdf:resource="#MilkywayDM"/>
+</NormalMatter>
+
+<DarkMatter rdf:about="#MilkywayDM">
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+</DarkMatter>
 
 
 </rdf:RDF>

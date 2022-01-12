@@ -1,0 +1,2 @@
+Cython==0.29.25
+Owlready2==0.35
