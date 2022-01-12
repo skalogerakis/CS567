@@ -1,4 +1,5 @@
 from owlready2 import *
+import subprocess
 
 onto = get_ontology("http://skalogerakis.org/onto.owl")
 
@@ -185,15 +186,21 @@ def get_all_role_instances(role):  # ?? what is it suppose to print, ta roles ma
 
 def is_subclass_of(C, D):
     subclasses = onto.get_children_of(D)
-
     if C in subclasses:
         return True
-
     return False
 
 
-if __name__ == '__main__':
+def get_Smodule(jar_location, method, input_location, term_location, output_location):
+    subprocess.call(['java', '-jar', '{}'.format(jar_location),
+                     'extract', '--method', '{}'.format(method),
+                     '--input', '{}'.format(input_location),
+                     '--term-file', '{}'.format(term_location),
+                     '--output', '{}'.format(output_location)])
 
+
+if __name__ == '__main__':
+    # print("IRI", ArtificialSatellite.iri)
     ############################ ABOX #####################################
 
     # Galaxy Concepts
@@ -202,10 +209,10 @@ if __name__ == '__main__':
     Cygunus = Galaxy("Cygunus")
 
     # Celestial Body Concepts
-    Moon = CelestialBody("Moon")
+    # Moon = CelestialBody("Moon")  #UPDATED: Commented out. Defined and later so redundant
     Sun = CelestialBody("Sun")
-    Mars = CelestialBody("Mars")
-    Pluto = CelestialBody("Pluto")
+    # Mars = CelestialBody("Mars")  #UPDATED: Commented out. Defined and later so redundant
+    # Pluto = CelestialBody("Pluto")    #UPDATED: Commented out. Defined and later so redundant
 
     # Planetary System Body
     Enke = PlanetarySystemBody("Enke")
@@ -302,7 +309,7 @@ if __name__ == '__main__':
     except OwlReadyInconsistentOntologyError:
         exception_flag = True
     finally:
-        print("\n\n###### Stage 2.1 #########")
+        print("\n\n###### Stage 2.1 #########")  # Todo ask how to make that inconsistent
         print("Is_consistent?\t ", is_consistent(ontology=onto, flag=exception_flag))
 
     print("\n\n###### Stage 2.2 #########")
@@ -325,3 +332,18 @@ if __name__ == '__main__':
     print(is_subclass_of(Planet, Galaxy))
     print(is_subclass_of(NaturalSatellite, Satellite))
     print(is_subclass_of(Planet, CelestialBody))
+
+    print("\n\n###### BONUS: Stage 2.6 #########")
+    # Reconfigure bonus question at will
+    # Robot extract documentation: http://robot.obolibrary.org/extract
+    # jar_location: full path that robor.jar file exists
+    # method: method used from robot API, Options: BOT, TOP, STAR
+    # input_location: full path that the initial .owl file exists
+    # term_location: full path that the term file exists
+    # output location: full path and new file name that the produced .owl file will be placed
+    get_Smodule(jar_location='/home/skalogerakis/Documents/Workspace/CS567/MyDocs/robot.jar',
+                method='BOT',
+                input_location='/home/skalogerakis/Documents/Workspace/CS567/main_final_onto.owl',
+                term_location='/home/skalogerakis/Documents/Workspace/CS567/Robot/term_sample.txt',
+                output_location='/home/skalogerakis/Documents/Workspace/CS567/Robot/bonus_final_onto.owl')
+    print("Completed file generation")
