@@ -107,8 +107,8 @@ class ArtificialSatellite(Satellite):
     namespace = onto
     is_a = [Not(NaturalSatellite)]  # 4) Artificial Satellite is not a natural satellite.
 
-
-NaturalSatellite.is_a.append(Not(ArtificialSatellite))  # 19) Natural Satellite in not an artificial satellite
+# Comment out rule 19. TODO change that in the report as well
+# NaturalSatellite.is_a.append(Not(ArtificialSatellite))  # 19) Natural Satellite in not an artificial satellite
 
 '''
     This is the key for rule 18)
@@ -132,7 +132,8 @@ class DarkMatter(Thing):
 
 
 AllDisjoint([NormalMatter, DarkMatter])  # Normal and DarkMatter must be disjoint
-NormalMatter.is_a.append(Not(DarkMatter))  # 5) NormalMatter is not Dark Matter
+# Comment out rule 5. TODO change that in the report as well
+# NormalMatter.is_a.append(Not(DarkMatter))  # 5) NormalMatter is not Dark Matter
 
 
 class SpaceTelescope(Thing):
@@ -151,9 +152,10 @@ class Asteroid(CelestialBody):  # 12) Asteroid is a celestial body (is a subclas
 
 class PlanetarySystemBody(Thing):
     namespace = onto
-    is_a = [CelestialBody & Not(Planet) & Not(DwarfPlanet) & Not(
-        NaturalSatellite)]  # 3) A planetary system Body is a celestial body
-    # that is not a planet nor a dwarf planet not a satellite
+    # TODO update on the report
+    # 3) UPDATED: A planetary system Body is a celestial body that is not a planet not a satellite
+    is_a = [CelestialBody & Not(Planet) & Not(NaturalSatellite)]
+
 
 
 if __name__ == '__main__':
