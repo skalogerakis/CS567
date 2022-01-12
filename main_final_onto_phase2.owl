@@ -97,6 +97,7 @@
       </owl:intersectionOf>
     </owl:Class>
   </rdfs:subClassOf>
+  <rdfs:subClassOf rdf:resource="#CelestialBody"/>
 </owl:Class>
 
 <owl:Class rdf:about="#DwarfPlanet">
@@ -131,6 +132,7 @@
       </owl:intersectionOf>
     </owl:Class>
   </rdfs:subClassOf>
+  <rdfs:subClassOf rdf:resource="#CelestialBody"/>
   <owl:equivalentClass>
     <owl:Class>
       <owl:unionOf rdf:parseType="Collection">
@@ -182,6 +184,7 @@
       </owl:intersectionOf>
     </owl:Class>
   </rdfs:subClassOf>
+  <rdfs:subClassOf rdf:resource="#CelestialBody"/>
 </owl:Class>
 
 <owl:Class rdf:about="#Comet">
@@ -207,6 +210,7 @@
       </owl:intersectionOf>
     </owl:Class>
   </rdfs:subClassOf>
+  <rdfs:subClassOf rdf:resource="#CelestialBody"/>
 </owl:Class>
 
 <Galaxy rdf:about="#Milkyway">

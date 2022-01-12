@@ -72,7 +72,6 @@ class Galaxy(Thing):
     is_a = [locatedIn.some(Universe) & hasMember.some(Star) & hasCenterOfMass.some(
         Thing)]  # 2) A galaxy is located in the universe and there is some star
     # that is a member of this galaxy and galaxy and hasCenterOfMass
-    # TODO if defined without some, then creates a new class in Protege
 
 
 Universe.is_a.append(hasMember.min(1,
@@ -92,7 +91,7 @@ class Planet(Thing):
 class DwarfPlanet(Planet):
     namespace = onto
     is_a = [Planet & Not(isSatelliteOf.some(
-        Planet))]  # 9) Dwarf planet is a planet that is not a satellite of a planet TODO Swithced the original defintion
+        Planet))]  # 9) Dwarf planet is a planet that is not a satellite of a planet
 
 
 class Satellite(Thing):
@@ -177,11 +176,12 @@ def is_of_types(individual):
 
 
 def get_all_concept_instances(concept):
-    return onto.get_instances_of(concept)  # or concept.instances()
+    return concept.instances()
+    # return onto.get_instances_of(concept)  # or concept.instances()
 
 
 def get_all_role_instances(role):  # ?? what is it suppose to print, ta roles mas einai ola object properties
-    return onto.get_instances_of(role)  # or role.instances()
+    return list(role.get_relations())  # or role.instances()
 
 
 def is_subclass_of(C, D):
@@ -189,6 +189,7 @@ def is_subclass_of(C, D):
     if C in subclasses:
         return True
     return False
+
 
 
 def get_Smodule(jar_location, method, input_location, term_location, output_location):
@@ -298,61 +299,65 @@ if __name__ == '__main__':
 
     onto.save(file="main_final_onto.owl", format="rdfxml")
 
+
     #  PHASE 2 implementation
-
     print("###### Stage 2 #########")
-    
-    exception_flag = False  # Flag for OwlReadyInconsistentOntologyError
+    with onto:      # Use in this manner, otherwise the reasoner's changes do not apply in the next questions
 
-    try:
-        # Todo infer_property_values = True??
-        sync_reasoner()
-    except OwlReadyInconsistentOntologyError:
-        exception_flag = True
-    finally:
-        print("\n\n###### Stage 2.1 #########")  # Todo ask how to make that inconsistent
-        print("Is_consistent?\t ", is_consistent(ontology=onto, flag=exception_flag))
+        exception_flag = False  # Flag for OwlReadyInconsistentOntologyError
 
-    print("\n\n###### Stage 2.2 #########")
-    print(is_of_types(Halley))
-    print(is_of_types(Milkyway))
-    print(is_of_types(Moon))
-    print(is_of_types(Sun))
-    print(is_of_types(Earth))   # TODO should it return also that Earth is a celestial body?
+        try:
+            # TODO infer_property_values = True??
+            sync_reasoner()
+        except OwlReadyInconsistentOntologyError:
+            exception_flag = True
+        finally:
+            print("\n\n###### Stage 2.1 #########")  # Todo ask how to make that inconsistent
+            print("Is_consistent?\t ", is_consistent(ontology=onto, flag=exception_flag))
 
-    print("\n\n###### Stage 2.3 #########") # TODO you can call an external reasoner, or implement a method of your own
-    print(get_all_concept_instances(SpaceTelescope))
-    print(get_all_concept_instances(Planet))
-    print(get_all_concept_instances(DwarfPlanet))
+        print("\n\n###### Stage 2.2 #########")
+        print(is_of_types(Halley))
+        print(is_of_types(Milkyway))
+        print(is_of_types(Moon))
+        print(is_of_types(Sun))
+        print(is_of_types(Earth))   # TODO should it return also that Earth is a celestial body?
 
-    # TODO must definitely check that
-    print("\n\n###### Stage 2.4 #########")
-    print(get_all_role_instances(pullGravity))
-
-    # EUVE.observes = [Milkyway]
-    # print(get_all_role_instances(pullGravity))
-    # print(onto.observes.getProperties())
-    # tst = observes
-
-    # TODO using tableau from a reasoner, e.g., HermiT ???
-    print("\n\n###### Stage 2.5 #########")
-    print(is_subclass_of(Planet, Galaxy))
-    print(is_subclass_of(NaturalSatellite, Satellite))
-    print(is_subclass_of(Planet, CelestialBody))    #TODO this is wrong should be True
-    print(is_subclass_of(DwarfPlanet, Planet))
+        print("\n\n###### Stage 2.3 #########") # TODO you can call an external reasoner, or implement a method of your own
+        print(get_all_concept_instances(SpaceTelescope))
+        print(get_all_concept_instances(Planet))        #TODO should we also expect results from Dwarf planer? Different if defined as .instances or getInstances
+        print(get_all_concept_instances(DwarfPlanet))
 
 
-    print("\n\n###### BONUS: Stage 2.6 #########")
-    # Reconfigure bonus question at will
-    # Robot extract documentation: http://robot.obolibrary.org/extract
-    # jar_location: full path that robor.jar file exists
-    # method: method used from robot API, Options: BOT, TOP, STAR
-    # input_location: full path that the initial .owl file exists
-    # term_location: full path that the term file exists
-    # output location: full path and new file name that the produced .owl file will be placed
-    get_Smodule(jar_location='/home/skalogerakis/Documents/Workspace/CS567/MyDocs/robot.jar',
-                method='BOT',
-                input_location='/home/skalogerakis/Documents/Workspace/CS567/main_final_onto.owl',
-                term_location='/home/skalogerakis/Documents/Workspace/CS567/Robot/term_sample.txt',
-                output_location='/home/skalogerakis/Documents/Workspace/CS567/Robot/bonus_final_onto.owl')
-    print("Completed file generation")
+        print("\n\n###### Stage 2.4 #########")
+        print("Role: pullGravity", get_all_role_instances(pullGravity))
+        print("Role: observes", get_all_role_instances(observes))
+        print("Role: hasForSatellite", get_all_role_instances(hasForSatellite))
+
+        # TODO using tableau from a reasoner, e.g., HermiT ???.
+        #  TODO Do we care about roles? If yes then this is correct
+        print("\n\n###### Stage 2.5 #########")
+        print(is_subclass_of(Planet, Galaxy))   # This should be False
+        print(is_subclass_of(NaturalSatellite, Satellite))
+        print(is_subclass_of(Planet, CelestialBody))    # Without the with statement this would be False, which is not correct as advised from the reasoner
+        print(is_subclass_of(DwarfPlanet, Planet))
+        print(is_subclass_of(isSatelliteOf, orbitsAround))
+
+
+        print("\n\n###### BONUS: Stage 2.6 #########")
+
+        # TODO what term do we want to use? Check also the output, it does not reduce the ontology
+        # Reconfigure bonus question at will
+        # Robot extract documentation: http://robot.obolibrary.org/extract
+        # jar_location: full path that robor.jar file exists
+        # method: method used from robot API, Options: BOT, TOP, STAR
+        # input_location: full path that the initial .owl file exists
+        # term_location: full path that the term file exists
+        # output location: full path and new file name that the produced .owl file will be placed
+        get_Smodule(jar_location='/home/skalogerakis/Documents/Workspace/CS567/MyDocs/robot.jar',
+                    method='BOT',
+                    input_location='/home/skalogerakis/Documents/Workspace/CS567/main_final_onto.owl',
+                    term_location='/home/skalogerakis/Documents/Workspace/CS567/Robot/term_sample.txt',
+                    output_location='/home/skalogerakis/Documents/Workspace/CS567/Robot/bonus_final_onto.owl')
+        print("Completed file generation")
+        # TODO do we save the new phase ontology?
+        onto.save(file="main_final_onto_phase2.owl", format="rdfxml")
