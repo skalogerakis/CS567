@@ -72,14 +72,6 @@
     
 
 
-    <!-- http://skalogerakis.org/onto.owl#pullGravity -->
-
-    <owl:ObjectProperty rdf:about="http://skalogerakis.org/onto.owl#pullGravity">
-        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
-    </owl:ObjectProperty>
-    
-
-
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -380,10 +372,6 @@
         <hasForSatellite rdf:resource="http://skalogerakis.org/onto.owl#Moon"/>
         <hasForSatellite rdf:resource="http://skalogerakis.org/onto.owl#Sputnik"/>
         <orbitsAround rdf:resource="http://skalogerakis.org/onto.owl#Sun"/>
-        <pullGravity rdf:resource="http://skalogerakis.org/onto.owl#Hubble"/>
-        <pullGravity rdf:resource="http://skalogerakis.org/onto.owl#Moon"/>
-        <pullGravity rdf:resource="http://skalogerakis.org/onto.owl#Sputnik"/>
-        <pullGravity rdf:resource="http://skalogerakis.org/onto.owl#Sun"/>
     </owl:NamedIndividual>
     
 
@@ -519,7 +507,6 @@
 
     <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#MilkywayNM">
         <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#NormalMatter"/>
-        <pullGravity rdf:resource="http://skalogerakis.org/onto.owl#MilkywayDM"/>
     </owl:NamedIndividual>
     
 
@@ -595,10 +582,6 @@
     <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Sun">
         <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#CelestialBody"/>
         <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Star"/>
-        <pullGravity rdf:resource="http://skalogerakis.org/onto.owl#Icarus"/>
-        <pullGravity rdf:resource="http://skalogerakis.org/onto.owl#Jupiter"/>
-        <pullGravity rdf:resource="http://skalogerakis.org/onto.owl#Saturn"/>
-        <pullGravity rdf:resource="http://skalogerakis.org/onto.owl#Venus"/>
     </owl:NamedIndividual>
     
 
