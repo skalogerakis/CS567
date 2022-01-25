@@ -1,0 +1,22 @@
+# Download latest version of robot.jar
+http://robot.obolibrary.org/
+
+Go to getting started -> Mac & Linux -> Step 1.
+# Executed in version v1.8.3
+
+# Go to the file that contains the robot.jar file and execute the following command(After updating paths)
+java -jar robot.jar extract --method BOT --input /home/skalogerakis/Documents/Workspace/CS567/main_final_onto.owl --term-file /home/skalogerakis/Documents/Workspace/CS567/Robot/term_sample.txt --output /home/skalogerakis/Documents/Workspace/CS567/Robot/bonus_final_onto.owl
+
+
+
+#Current java -version
+>> openjdk version "1.8.0_312"
+>> OpenJDK Runtime Environment (build 1.8.0_312-8u312-b07-0ubuntu1~20.04-b07)
+>> OpenJDK 64-Bit Server VM (build 25.312-b07, mixed mode)
+
+
+# Robot command
+robot extract --method STAR \
+    --input /home/skalogerakis/Documents/Workspace/CS567/main_final_onto.owl \
+    --term-file /home/skalogerakis/Documents/Workspace/CS567/Robot/term_sample.txt \
+    --output /home/skalogerakis/Documents/Workspace/CS567/Robot/bonus_final_onto.owl

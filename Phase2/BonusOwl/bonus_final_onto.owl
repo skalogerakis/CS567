@@ -1,0 +1,607 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://skalogerakis.org/onto.owl#"
+     xml:base="http://skalogerakis.org/onto.owl"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:onto="http://skalogerakis.org/onto.owl#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://skalogerakis.org/onto.owl"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#hasCenterOfMass -->
+
+    <owl:ObjectProperty rdf:about="http://skalogerakis.org/onto.owl#hasCenterOfMass">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#hasForSatellite -->
+
+    <owl:ObjectProperty rdf:about="http://skalogerakis.org/onto.owl#hasForSatellite">
+        <owl:inverseOf rdf:resource="http://skalogerakis.org/onto.owl#isSatelliteOf"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#hasMember -->
+
+    <owl:ObjectProperty rdf:about="http://skalogerakis.org/onto.owl#hasMember">
+        <owl:inverseOf rdf:resource="http://skalogerakis.org/onto.owl#locatedIn"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#isSatelliteOf -->
+
+    <owl:ObjectProperty rdf:about="http://skalogerakis.org/onto.owl#isSatelliteOf">
+        <rdfs:subPropertyOf rdf:resource="http://skalogerakis.org/onto.owl#orbitsAround"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#locatedIn -->
+
+    <owl:ObjectProperty rdf:about="http://skalogerakis.org/onto.owl#locatedIn"/>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#observes -->
+
+    <owl:ObjectProperty rdf:about="http://skalogerakis.org/onto.owl#observes"/>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#orbitsAround -->
+
+    <owl:ObjectProperty rdf:about="http://skalogerakis.org/onto.owl#orbitsAround"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#ArtificialSatellite -->
+
+    <owl:Class rdf:about="http://skalogerakis.org/onto.owl#ArtificialSatellite">
+        <rdfs:subClassOf rdf:resource="http://skalogerakis.org/onto.owl#Satellite"/>
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:complementOf rdf:resource="http://skalogerakis.org/onto.owl#NaturalSatellite"/>
+            </owl:Class>
+        </rdfs:subClassOf>
+        <owl:disjointWith rdf:resource="http://skalogerakis.org/onto.owl#NaturalSatellite"/>
+    </owl:Class>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Asteroid -->
+
+    <owl:Class rdf:about="http://skalogerakis.org/onto.owl#Asteroid">
+        <rdfs:subClassOf rdf:resource="http://skalogerakis.org/onto.owl#CelestialBody"/>
+    </owl:Class>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#CelestialBody -->
+
+    <owl:Class rdf:about="http://skalogerakis.org/onto.owl#CelestialBody">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://skalogerakis.org/onto.owl#locatedIn"/>
+                <owl:someValuesFrom rdf:resource="http://skalogerakis.org/onto.owl#Galaxy"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Comet -->
+
+    <owl:Class rdf:about="http://skalogerakis.org/onto.owl#Comet">
+        <rdfs:subClassOf rdf:resource="http://skalogerakis.org/onto.owl#CelestialBody"/>
+    </owl:Class>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#DarkMatter -->
+
+    <owl:Class rdf:about="http://skalogerakis.org/onto.owl#DarkMatter">
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:complementOf rdf:resource="http://skalogerakis.org/onto.owl#NormalMatter"/>
+            </owl:Class>
+        </rdfs:subClassOf>
+        <owl:disjointWith rdf:resource="http://skalogerakis.org/onto.owl#NormalMatter"/>
+    </owl:Class>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#DwarfPlanet -->
+
+    <owl:Class rdf:about="http://skalogerakis.org/onto.owl#DwarfPlanet">
+        <rdfs:subClassOf rdf:resource="http://skalogerakis.org/onto.owl#Planet"/>
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://skalogerakis.org/onto.owl#Planet"/>
+                    <owl:Class>
+                        <owl:complementOf>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="http://skalogerakis.org/onto.owl#isSatelliteOf"/>
+                                <owl:someValuesFrom rdf:resource="http://skalogerakis.org/onto.owl#Planet"/>
+                            </owl:Restriction>
+                        </owl:complementOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Galaxy -->
+
+    <owl:Class rdf:about="http://skalogerakis.org/onto.owl#Galaxy">
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://skalogerakis.org/onto.owl#hasCenterOfMass"/>
+                        <owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://skalogerakis.org/onto.owl#hasMember"/>
+                        <owl:someValuesFrom rdf:resource="http://skalogerakis.org/onto.owl#Star"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://skalogerakis.org/onto.owl#locatedIn"/>
+                        <owl:someValuesFrom rdf:resource="http://skalogerakis.org/onto.owl#Universe"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#NaturalSatellite -->
+
+    <owl:Class rdf:about="http://skalogerakis.org/onto.owl#NaturalSatellite">
+        <rdfs:subClassOf rdf:resource="http://skalogerakis.org/onto.owl#Satellite"/>
+    </owl:Class>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#NormalMatter -->
+
+    <owl:Class rdf:about="http://skalogerakis.org/onto.owl#NormalMatter"/>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Planet -->
+
+    <owl:Class rdf:about="http://skalogerakis.org/onto.owl#Planet">
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://skalogerakis.org/onto.owl#CelestialBody"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://skalogerakis.org/onto.owl#orbitsAround"/>
+                        <owl:someValuesFrom rdf:resource="http://skalogerakis.org/onto.owl#Star"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#PlanetarySystemBody -->
+
+    <owl:Class rdf:about="http://skalogerakis.org/onto.owl#PlanetarySystemBody">
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://skalogerakis.org/onto.owl#CelestialBody"/>
+                    <owl:Class>
+                        <owl:complementOf rdf:resource="http://skalogerakis.org/onto.owl#NaturalSatellite"/>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:complementOf rdf:resource="http://skalogerakis.org/onto.owl#Planet"/>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Satellite -->
+
+    <owl:Class rdf:about="http://skalogerakis.org/onto.owl#Satellite">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://skalogerakis.org/onto.owl#ArtificialSatellite"/>
+                    <rdf:Description rdf:about="http://skalogerakis.org/onto.owl#NaturalSatellite"/>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://skalogerakis.org/onto.owl#CelestialBody"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://skalogerakis.org/onto.owl#orbitsAround"/>
+                        <owl:someValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#SpaceTelescope -->
+
+    <owl:Class rdf:about="http://skalogerakis.org/onto.owl#SpaceTelescope">
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://skalogerakis.org/onto.owl#CelestialBody"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://skalogerakis.org/onto.owl#observes"/>
+                        <owl:someValuesFrom rdf:resource="http://skalogerakis.org/onto.owl#CelestialBody"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Star -->
+
+    <owl:Class rdf:about="http://skalogerakis.org/onto.owl#Star"/>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Universe -->
+
+    <owl:Class rdf:about="http://skalogerakis.org/onto.owl#Universe">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://skalogerakis.org/onto.owl#hasMember"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="http://skalogerakis.org/onto.owl#Galaxy"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Andromeda -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Andromeda">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Galaxy"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Borrelly -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Borrelly">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Comet"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Ceres -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Ceres">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Asteroid"/>
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#DwarfPlanet"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Chiron -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Chiron">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Comet"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Cygunus -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Cygunus">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Galaxy"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#EUVE -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#EUVE">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#SpaceTelescope"/>
+        <observes rdf:resource="http://skalogerakis.org/onto.owl#Milkyway"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Earth -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Earth">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Planet"/>
+        <hasForSatellite rdf:resource="http://skalogerakis.org/onto.owl#Glory"/>
+        <hasForSatellite rdf:resource="http://skalogerakis.org/onto.owl#Moon"/>
+        <hasForSatellite rdf:resource="http://skalogerakis.org/onto.owl#Sputnik"/>
+        <orbitsAround rdf:resource="http://skalogerakis.org/onto.owl#Sun"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Enke -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Enke">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Comet"/>
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#PlanetarySystemBody"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Eris -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Eris">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#DwarfPlanet"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Eros -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Eros">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Asteroid"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Europa -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Europa">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#NaturalSatellite"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Glory -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Glory">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#ArtificialSatellite"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Halley -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Halley">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Comet"/>
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#PlanetarySystemBody"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Hubble -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Hubble">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#SpaceTelescope"/>
+        <observes rdf:resource="http://skalogerakis.org/onto.owl#Earth"/>
+        <orbitsAround rdf:resource="http://skalogerakis.org/onto.owl#Earth"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Icarus -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Icarus">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Asteroid"/>
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#PlanetarySystemBody"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Jupiter -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Jupiter">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Planet"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#MOST -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#MOST">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#SpaceTelescope"/>
+        <observes rdf:resource="http://skalogerakis.org/onto.owl#Earth"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Makemake -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Makemake">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#DwarfPlanet"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Mars -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Mars">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Planet"/>
+        <orbitsAround rdf:resource="http://skalogerakis.org/onto.owl#Sun"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Milkyway -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Milkyway">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Galaxy"/>
+        <hasMember rdf:resource="http://skalogerakis.org/onto.owl#Ceres"/>
+        <hasMember rdf:resource="http://skalogerakis.org/onto.owl#Earth"/>
+        <hasMember rdf:resource="http://skalogerakis.org/onto.owl#Icarus"/>
+        <hasMember rdf:resource="http://skalogerakis.org/onto.owl#Mars"/>
+        <hasMember rdf:resource="http://skalogerakis.org/onto.owl#Pallas"/>
+        <hasMember rdf:resource="http://skalogerakis.org/onto.owl#Rigel"/>
+        <hasMember rdf:resource="http://skalogerakis.org/onto.owl#Sirius"/>
+        <hasMember rdf:resource="http://skalogerakis.org/onto.owl#Sun"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#MilkywayDM -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#MilkywayDM">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#DarkMatter"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#MilkywayNM -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#MilkywayNM">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#NormalMatter"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Moon -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Moon">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#NaturalSatellite"/>
+        <orbitsAround rdf:resource="http://skalogerakis.org/onto.owl#Earth"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Pallas -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Pallas">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Asteroid"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Pleiades -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Pleiades">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Star"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Pluto -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Pluto">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#DwarfPlanet"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Rigel -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Rigel">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Star"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Saturn -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Saturn">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Planet"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Sirius -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Sirius">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Star"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Sputnik -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Sputnik">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#ArtificialSatellite"/>
+        <orbitsAround rdf:resource="http://skalogerakis.org/onto.owl#Earth"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Sun -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Sun">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#CelestialBody"/>
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Star"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Triton -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Triton">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#NaturalSatellite"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://skalogerakis.org/onto.owl#Venus -->
+
+    <owl:NamedIndividual rdf:about="http://skalogerakis.org/onto.owl#Venus">
+        <rdf:type rdf:resource="http://skalogerakis.org/onto.owl#Planet"/>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.6) https://github.com/owlcs/owlapi -->
+
