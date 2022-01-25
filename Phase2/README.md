@@ -88,7 +88,7 @@ all the suggestions from the instructor the following changes transpired
         
         PlanetarySystemBody is_a CeletialBody & Not(Planet) & Not(NaturalSatellite)
 
-- A few of the Abox rules in the CelestialBody where redudant so they where commented 
+- A few of the Abox rules in the CelestialBody where redudant so they where commented out
 
 
 After examining the implementation of phase the below change was necessary. The Abox Instances of Ceres
@@ -97,7 +97,7 @@ After examining the implementation of phase the below change was necessary. The 
 
 proved to be the instance that made our ontology inconsistent after examining the code and so it is commented out.
 If commented back in, that will change the result of question 2.1, as the consistent will be inconsistent and the result 
-value will be "Yes" (now the answer is "No")
+value will be "No" (now the answer is "Yes")
 
 Regarding the bonus and the term file provided many different scenarios were attempted however, the output .owl file
 was more or less the same. Also the STAR method that was chosen was advised from the instructor as the most suitable to experiment on.
