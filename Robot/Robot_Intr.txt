@@ -16,7 +16,7 @@ java -jar robot.jar extract --method BOT --input /home/skalogerakis/Documents/Wo
 
 
 # Robot command
-robot extract --method TOP \
+robot extract --method STAR \
     --input /home/skalogerakis/Documents/Workspace/CS567/main_final_onto.owl \
     --term-file /home/skalogerakis/Documents/Workspace/CS567/Robot/term_sample.txt \
     --output /home/skalogerakis/Documents/Workspace/CS567/Robot/bonus_final_onto.owl
